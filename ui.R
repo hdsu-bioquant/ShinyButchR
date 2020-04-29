@@ -56,6 +56,13 @@ dashboardPage(
         icon = icon("bar-chart")
       ),
       
+      menuItem(
+        "Save results",
+        #id = "nmfinput",
+        tabName = "saveres",
+        icon = icon("archive")
+      ),
+      
       tags$hr(),
       menuItem(
         "FAQ",
@@ -445,11 +452,79 @@ dashboardPage(
             plotOutput(outputId = "plot_riverplot")
           )
         )
+      ),
+      
+      
+      tabItem(
+        tabName = "saveres",
         
         
-        
-        
+        fluidRow(
+          box(
+            title = h2("Save NMF object"), 
+            width = 6, 
+            height = 500,
+            solidHeader = TRUE, 
+            status = "warning",
+            background = "black",
+            #uiOutput("sel_K"),
+            #uiOutput("inputannot_selcols")
+            h3("Save NMF object to use later in R", align = "center"),
+            
+            downloadButton('downloadNMFobject', 'Download'),
+            
+            h3("This object is complatible with the latest 
+               version of Bratwurst.", align = "center"),
+            h3("To install in R use:", align = "center"),
+            h5("devtools::install_github('hdsu-bioquant/bratwurst', 
+               ref='dev_hdsu_lite')", align = "center")
+            
+            
+            
+          ),
+          box(
+            title = h2("Save H and W matrices"), 
+            status = "warning",
+            background = "black",
+            width = 6, 
+            height = 500,
+            solidHeader = TRUE,
+            h3("Save the H matrix or the W matrix 
+               in csv or RDS format", align = "center"),
+            
+            #select K to download
+            uiOutput("download_sel_K"),
+            
+            radioGroupButtons(
+              inputId = "download_matrixwhich",
+              label = "Select Matrix", 
+              choices = c("H", "W"),
+              selected = "H",
+              justified = FALSE,
+              checkIcon = list(
+                yes = icon("ok", 
+                           lib = "glyphicon"))
+            ),
+            
+            radioGroupButtons(
+              inputId = "download_matrixformat",
+              label = "Select format", 
+              choices = c(".RDS", ".csv"),
+              selected = ".RDS",
+              justified = FALSE,
+              checkIcon = list(
+                yes = icon("ok", 
+                           lib = "glyphicon"))
+            ),
+            
+            
+            
+            downloadButton('downloadHmatrix', 'Download')
+            
+          )
+        )
       )
+      
       
     )
   ),
