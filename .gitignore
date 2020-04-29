@@ -1,11 +1,5 @@
 **/.DS_Store
 .Rhistory
-map_my_corona_shiny/rsconnect/
-map_my_corona_shiny/data/**.fasta
-map_my_corona_shiny/testquery/**.fasta
-map_my_corona_shiny/data/my_query.fasta
-map_my_corona_shiny/data/blaster_empty.RDS
-map_my_corona_shiny/data/SARScov2_alignment.tsv
-map_my_corona_shiny/data/**.fasta_alignment.tsv
-map_my_corona_shiny/data/inline.fasta
+data_test/
+rsconnect/
 .Rproj.user

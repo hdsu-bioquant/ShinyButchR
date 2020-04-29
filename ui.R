@@ -41,7 +41,7 @@ dashboardPage(
       h6("from .csv or .RDS files", align = "center"),
       
       menuItem(
-        "Factorize ...",
+        "Data and annotation upload ",
         #id = "nmfinput",
         tabName = "nmfinput",
         icon = icon("search")
@@ -96,12 +96,12 @@ dashboardPage(
           box(
             id = "uploadmatrix",
             width = 8,
-            height = 420,
-            title = h2("Data upload", align = "center"),
+            height = 520,
+            title ="Matrix upload",
             status = "warning",
             background = "black",
-            tags$hr(),
-            h4("Upload a matrix in a csv or RDS files",
+            #tags$hr(),
+            h4("Upload a matrix in a csv or RDS file",
                align = "center"),
             # Input: Select a file ----
             fileInput("file1", "Choose a .csv or .RDS File",
@@ -111,23 +111,23 @@ dashboardPage(
             
             uiOutput("inputmatrix_printout"),
             
-
             actionBttn(
-              inputId = "clear_stringSequence",
+              inputId = "clear_inputMatrix",
               label = "Clear",
               style = "minimal",
               size = "xs",
               color = "default"
             ),
 
-
-            actionBttn(
+            
+            h6(actionBttn(
               inputId = "load_demo",
               label = "Demo",
               style = "jelly",
               size  = "md",
               color = "royal"
-            ),
+            ), align = "center"),
+            
 
             h6("Click Demo ", align = "center"),
             h6("to load Corces-Buenrostro AML dataset", align = "center"),
@@ -137,7 +137,7 @@ dashboardPage(
           box(
             id = "nmfparams",
             width = 4,
-            height = 420,
+            height = 520,
             title = "NMF params",
             status = "warning",
             background = "black",
@@ -188,19 +188,40 @@ dashboardPage(
 
         fluidRow(
           box(
-            #title = "Title 2",
-            width = 9, height = 430,
-            solidHeader = TRUE,
-            "out"
+            id = "uploadannot",
+            width = 8,
+            height = 520,
+            title ="Annotation upload",
+            status = "warning",
+            background = "black",
+            #tags$hr(),
+            h4("Upload a table with annotation data in a csv or RDS file",
+               align = "center"),
+            h4("The first column should match the column names in the input matrix",
+               align = "center"),
+            # Input: Select a file ----
+            fileInput("file_annot", "Choose a .csv or .RDS File",
+                      multiple = FALSE,
+                      accept = c(".RDS", ".csv")),
+            
+            #uiOutput("inputannot_selcols"),
+            uiOutput("inputannot_printout")
+            
+            #h6("The first column is not used ", align = "center"),
+            
           ),
           
           box(
-            title = "Start NMF",
-            width = 3, 
-            height = 430,
+            title = h1("Start NMF", align = "center"),
+            width = 4, 
+            height = 520,
             solidHeader = TRUE,
-            status = "primary",
+            status = "success",
             background = "black",
+            
+            h4("Click 'Submit' button to start running NMF 
+               in the uploaded matrix and with selected parameters",
+               align = "center"),
             
             # actionBttn(
             #   inputId = "startNMF",
@@ -325,7 +346,8 @@ dashboardPage(
         fluidRow(
           box(
             title = "H Matrix Heatmap", 
-            width = 3, height = 320,
+            width = 3, 
+            height = 350,
             solidHeader = TRUE, status = "primary",
             uiOutput("sel_K"),
             
@@ -359,12 +381,15 @@ dashboardPage(
               value = TRUE,
               status = "success",
               fill = TRUE
-            )
+            ),
+            
+            uiOutput("inputannot_selcols")
             
           ),
           box(
             #title = "Title 2", 
-            width = 9, height = 320,
+            width = 9, 
+            height = 350,
             solidHeader = TRUE,
             plotOutput(outputId = "plot_hmatrixheat")
           )

@@ -86,8 +86,10 @@ function(input, output, session) {
     #lapply(norm_mat_list, dim)
     #lapply(norm_mat_list, "[", 1:5, 1:5)
     # Read annot
-    annot <- readRDS("data/buenrostro_AML_multiview_annotation.RDS")
-    annot <- annot[,c("sampleID", "Celltype", "color")]
+    annot <- readRDS("data/buenrostro_AML_multiview_annotation.RDS") %>% 
+      select(sampleID, Celltype) %>% 
+      mutate(nsample = 1:n())
+    #annot <- annot[,c("sampleID", "Celltype", "color")]
     
     # Reactive matrix
     inputMatrix_react(norm_mat_list[[1]])
@@ -102,15 +104,131 @@ function(input, output, session) {
     
   })
   
+  ##--------------------------------------------------------------------------##
+  ##                              Upload data                                 ##
+  ##--------------------------------------------------------------------------##
+  observeEvent({
+    input$file1
+  }, {
+    my_path <- input$file1$datapath
+    ext <- tools::file_ext(my_path)
+    print(ext)
+    
+    if (ext %in% c("RDS", "rds", "Rds")) {
+      mymat <- readRDS(my_path)
+    } else if (ext %in% c("CSV", "csv", "Csv")) {
+      mymat <- as.matrix(read_csv(my_path))
+    } else {
+      sendSweetAlert(
+        session = session,
+        title = "Invalid file type",
+        text = "please upload csv or RDS file",
+        type = "error"
+      )
+      mymat <- NULL
+    }
+    
+    if (!is.numeric(mymat) ) {
+      sendSweetAlert(
+        session = session,
+        title = "Invalid matrix",
+        text = "please upload a non negative matrix",
+        type = "error"
+      )
+      mymat <- NULL
+    } else if (min(mymat) <=0) {
+      sendSweetAlert(
+        session = session,
+        title = "Invalid matrix",
+        text = "please upload a non negative matrix",
+        type = "error"
+      )
+      mymat <- NULL
+    }
+    
+    
+    
+    
+    inputMatrix_react(mymat)
+  })
   
+  observeEvent({
+    input$file_annot
+  }, {
+    my_path <- input$file_annot$datapath
+    ext <- tools::file_ext(my_path)
+    print(ext)
+    
+    if (ext %in% c("RDS", "rds", "Rds")) {
+      myannot <- readRDS(my_path)
+    } else if (ext %in% c("CSV", "csv", "Csv")) {
+      myannot <- read_csv(my_path)
+    } else {
+      sendSweetAlert(
+        session = session,
+        title = "Invalid file type",
+        text = "please upload csv or RDS file",
+        type = "error"
+      )
+      myannot <- NULL
+    }
+    annot_react(myannot)
+  })
+  
+  ##--------------------------------------------------------------------------##
+  ##                              Load  data aux                              ##
+  ##--------------------------------------------------------------------------##
   output$inputmatrix_printout <- renderTable({
-    print(inputMatrix_react()[1:5,1:5])
+    #print(annot_react()[1:5,])
     inputMatrix_react()[1:5,1:5]
     },
     spacing = "xs",
     rownames = TRUE
   )
   
+  output$inputannot_printout <- renderTable({
+    annot_react()[1:5,]
+  },
+  spacing = "xs",
+  rownames = TRUE
+  )
+  
+  # K selector
+  output$inputannot_selcols <- renderUI({
+    req(annot_react())
+    
+    pickerInput(
+      inputId  = "inputannot_selcols",
+      label    = "Select columns to use", 
+      choices  = colnames(annot_react())[-1],
+      selected = colnames(annot_react())[2],
+      options = list(
+        `actions-box` = TRUE), 
+      multiple = TRUE
+    )
+    
+    
+  })
+  
+  ##--------------------------------------------------------------------------##
+  ##                          Clear uploaded data                             ##
+  ##--------------------------------------------------------------------------##
+  observeEvent(input$clear_inputMatrix, {
+    #reset("stringSequence")
+    reset("file1")
+    reset("file_annot")
+    
+    #clearstatus$clear <- TRUE
+    inputMatrix_react(NULL)
+    annot_react(NULL)
+    
+    updateNumericInput(session, "params_kmin", value = 2)
+    updateNumericInput(session, "params_kmax", value = 3)
+    updateNumericInput(session, "params_ninits", value = 2)
+    updateNumericInput(session, "params_convthrs", value = 40)
+    
+    
+  }, priority = 1000)
   
   ##--------------------------------------------------------------------------##
   ##                                 Run NMF                                  ##
@@ -177,7 +295,8 @@ function(input, output, session) {
     print(length(optk))
     selectInput(
       inputId = "sel_K",
-      label = "Select factorization rank:",
+      #label = "Select factorization rank:",
+      label = "Select K:",
       choices = ks,
       selected = ifelse(length(optk) == 0,
                          ks[1], max(optk)),
@@ -193,17 +312,20 @@ function(input, output, session) {
     input$hmatheat_cluster_rows
     input$hmatheat_cluster_cols
     input$hmatheat_annot
+    input$inputannot_selcols
   }, {
     req(nmf_obj_react())
     
     output$plot_hmatrixheat <- renderPlot({
       req(nmf_obj_react())
       req(input$sel_K)
+      #req(input$inputannot_selcols)
+      
       k <- input$sel_K
       hmat <- HMatrix(nmf_obj_react(), k = k)
       #print(hmat)
       
-      if (input$hmatheat_annot) {
+      if (input$hmatheat_annot & !is.null(annot_react()) & length(input$inputannot_selcols) > 0) {
         
         # Build Heatmap annotation
         # heat_anno <- HeatmapAnnotation(df = data.frame(Celltype = annot_react()$Celltype),
@@ -211,6 +333,10 @@ function(input, output, session) {
         #                                show_annotation_name = FALSE, na_col = "white")
         annot <- annot_react()
         annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
+        
+        
+        annot <- annot[, colnames(annot) %in% input$inputannot_selcols]
+        
         heat_anno <- HeatmapAnnotation(df = annot,
                                        #col = type.colVector,
                                        show_annotation_name = FALSE, na_col = "white")
@@ -236,7 +362,7 @@ function(input, output, session) {
       
     },
     #width  = 100, 
-    height = 300
+    height = 330
     )
     
   })
