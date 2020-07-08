@@ -5,6 +5,25 @@ library(ComplexHeatmap)
 library(viridis)
 
 function(input, output, session) {
+  sendSweetAlert(
+    session = session,
+    title = NULL,
+    text = tags$span(
+      tags$br(),
+      tags$strong(h1("Welcome to")),
+      tags$br(),
+      tags$strong(h1("ShinyWurst")),
+      #tags$img(src="map_my_corona_logo.png",height="100px"),
+      tags$br(),
+      tags$br(),
+      "Loading ...", 
+      #tags$b("Demo"),
+      "Please wait until this message closes", 
+      tags$br()
+    ),
+    html = TRUE
+  )
+  
   #----------------------------------------------------------------------------#
   #                            Startup config                                  #
   #----------------------------------------------------------------------------#
@@ -82,17 +101,20 @@ function(input, output, session) {
   }, {
     
     # read matrix
-    norm_mat_list <- readRDS("data/buenrostro_AML_multiview_norm_mat_list.RDS")
+    #norm_mat_list <- readRDS("data/buenrostro_AML_multiview_norm_mat_list.RDS")
+    norm_mat_rnaseq <- readRDS("data/rnaseq_normalized_counts.RDS")
     #lapply(norm_mat_list, dim)
     #lapply(norm_mat_list, "[", 1:5, 1:5)
     # Read annot
-    annot <- readRDS("data/buenrostro_AML_multiview_annotation.RDS") %>% 
+    #annot <- readRDS("data/buenrostro_AML_multiview_annotation.RDS") %>% 
+    annot <- readRDS("data/rnaseq_annotation.RDS") %>% 
       select(sampleID, Celltype) %>% 
       mutate(nsample = 1:n())
     #annot <- annot[,c("sampleID", "Celltype", "color")]
     
     # Reactive matrix
-    inputMatrix_react(norm_mat_list[[1]])
+    #inputMatrix_react(norm_mat_list[[1]])
+    inputMatrix_react(norm_mat_rnaseq)
     # Reactive matrix annot
     annot_react(annot)
     
@@ -178,6 +200,11 @@ function(input, output, session) {
   ##--------------------------------------------------------------------------##
   ##                              Load  data aux                              ##
   ##--------------------------------------------------------------------------##
+  output$inputmatrix_printdim <- renderText({
+    req(inputMatrix_react())
+    d <- dim(inputMatrix_react())
+    paste0("Uploaded matrix with ", d[1], " rows, and ", d[2], " columns")
+  })
   output$inputmatrix_printout <- renderTable({
     #print(annot_react()[1:5,])
     inputMatrix_react()[1:5,1:5]
@@ -186,6 +213,11 @@ function(input, output, session) {
     rownames = TRUE
   )
   
+  output$inputannot_printdim <- renderText({
+    req(annot_react())
+    d <- dim(annot_react())
+    paste0("Uploaded annotation with ", d[1], " rows, and ", d[2], " columns")
+  })
   output$inputannot_printout <- renderTable({
     annot_react()[1:5,]
   },

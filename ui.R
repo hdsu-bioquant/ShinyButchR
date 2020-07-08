@@ -116,6 +116,7 @@ dashboardPage(
                       accept = c(".RDS", ".csv")),
             
             
+            uiOutput("inputmatrix_printdim"),
             uiOutput("inputmatrix_printout"),
             
             actionBttn(
@@ -212,6 +213,7 @@ dashboardPage(
                       accept = c(".RDS", ".csv")),
             
             #uiOutput("inputannot_selcols"),
+            uiOutput("inputannot_printdim"),
             uiOutput("inputannot_printout")
             
             #h6("The first column is not used ", align = "center"),
