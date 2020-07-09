@@ -495,7 +495,17 @@ function(input, output, session) {
       annot_char <- setNames(annot[, input$inputannot_selcols_recov], 
                              annot[,1])
       
-      recovery_plot(hmat, annot_char)
+      if (is.character(annot_char) | is.factor(annot_char)) {
+        recovery_plot(hmat, annot_char)
+      } else {
+        ggplot() + 
+          annotate("text", x = 0, y = 0, 
+                   label = c("Please select a categorical variable")) +
+          theme_void()
+        
+      }
+      
+      
       
       
     },
