@@ -1,5 +1,6 @@
 library(ggplot2)
-library(dplyr)
+library(tidyverse)
+library(cowplot)
 library(shinyjs)
 library(ComplexHeatmap)
 library(viridis)
@@ -225,7 +226,7 @@ function(input, output, session) {
   rownames = TRUE
   )
   
-  # K selector
+  # Selector columns to use
   output$inputannot_selcols <- renderUI({
     req(annot_react())
     
@@ -238,8 +239,6 @@ function(input, output, session) {
         `actions-box` = TRUE), 
       multiple = TRUE
     )
-    
-    
   })
   
   ##--------------------------------------------------------------------------##
@@ -435,6 +434,81 @@ function(input, output, session) {
     )
     
   })
+  
+  ##--------------------------------------------------------------------------##
+  ##                             NMF Recovery plots                           ##
+  ##--------------------------------------------------------------------------##
+  # K selector
+  output$sel_Krecov <- renderUI({
+    req(nmf_obj_react())
+    ks <- nmf_obj_react()@OptKStats$k
+    optk <- nmf_obj_react()@OptK
+    print(optk)
+    print(length(optk))
+    selectInput(
+      inputId = "sel_Krecov",
+      #label = "Select factorization rank:",
+      label = "Select K:",
+      choices = ks,
+      selected = ifelse(length(optk) == 0,
+                        ks[1], max(optk)),
+      multiple = FALSE
+    )
+  })
+  
+  # Selector columns to use
+  output$inputannot_selcols_recov <- renderUI({
+    req(annot_react())
+    
+    pickerInput(
+      inputId  = "inputannot_selcols_recov",
+      label    = "Select a column with a categorical annotation to estimate the recovery plots", 
+      choices  = colnames(annot_react())[-1],
+      selected = colnames(annot_react())[2],
+      options = list(
+        `actions-box` = TRUE), 
+      multiple = FALSE
+    )
+  })
+  
+  
+  observeEvent({
+    nmf_obj_react()
+    input$sel_Krecov
+    input$inputannot_selcols_recov
+  }, {
+    #print("Heatmap .....")
+    req(nmf_obj_react())
+    
+    output$plot_recoveryplots <- renderPlot({
+      req(nmf_obj_react())
+      req(input$sel_Krecov)
+      #req(input$inputannot_selcols)
+      
+      k <- input$sel_Krecov
+      hmat <- HMatrix(nmf_obj_react(), k = k)
+      
+      annot <- annot_react()
+      # annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
+      # annot <- annot[, input$inputannot_selcols_recov]
+      
+      annot_char <- setNames(annot[, input$inputannot_selcols_recov], 
+                             annot[,1])
+      
+      recovery_plot(hmat, annot_char)
+      
+      
+    },
+    height = 300
+    )
+    
+    
+  })
+  
+  
+  
+  
+  
   
   ##--------------------------------------------------------------------------##
   ##                                 NMF Riverplot                            ##

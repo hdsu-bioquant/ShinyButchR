@@ -351,7 +351,9 @@ dashboardPage(
       tabItem(
         tabName = "nmfplots",
         
-        
+        #----------------------------------------------------------------------#
+        #                        H matrix Heatmap                              #
+        #----------------------------------------------------------------------#
         fluidRow(
           box(
             title = "H Matrix Heatmap", 
@@ -404,6 +406,34 @@ dashboardPage(
           )
         ),
         
+        #----------------------------------------------------------------------#
+        #                        Recovery Plots                                #
+        #----------------------------------------------------------------------#
+        fluidRow(
+          box(
+            title = "Recovery Plots", 
+            width = 3, 
+            height = 350,
+            solidHeader = TRUE, status = "primary",
+            uiOutput("sel_Krecov"),
+            
+            uiOutput("inputannot_selcols_recov")
+            
+          ),
+          box(
+            #title = "Title 2", 
+            width = 9, 
+            height = 350,
+            solidHeader = TRUE,
+            plotOutput(outputId = "plot_recoveryplots")
+          )
+        ),
+        
+        
+        #----------------------------------------------------------------------#
+        #                    Optimal factorization rank                        #
+        #----------------------------------------------------------------------#
+        
         
         fluidRow(
           box(
@@ -426,6 +456,10 @@ dashboardPage(
             plotOutput(outputId = "plot_nmfoptk")
           )
         ),
+        
+        #----------------------------------------------------------------------#
+        #                              Riverplot                               #
+        #----------------------------------------------------------------------#
         
         fluidRow(
           box(
