@@ -336,6 +336,39 @@ function(input, output, session) {
     )
   })
   
+  # Heatmap Annot
+  heat_anno <- reactiveVal(NULL)
+  observeEvent({
+    input$hmatheat_annot
+    input$inputannot_selcols
+    input$sel_K
+    nmf_obj_react()
+  }, {
+    print("Heatmap Annot .....")
+    #req(nmf_obj_react())
+    req(nmf_obj_react())
+    req(input$sel_K)
+    #req(input$inputannot_selcols)
+    
+    k <- input$sel_K
+    hmat <- HMatrix(nmf_obj_react(), k = k)
+    
+    if (input$hmatheat_annot & !is.null(annot_react()) & length(input$inputannot_selcols) > 0) {
+      # Build Heatmap annotation
+      annot <- annot_react()
+      annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
+      annot <- annot[, colnames(annot) %in% input$inputannot_selcols]
+      
+      hanno <- HeatmapAnnotation(df = annot,
+                                 #col = type.colVector,
+                                 show_annotation_name = FALSE, na_col = "white")
+    } else {
+      hanno <- NULL
+    }
+    
+    heat_anno(hanno)
+  })
+  
   # Heatmap
   observeEvent({
     nmf_obj_react()
@@ -343,9 +376,11 @@ function(input, output, session) {
     input$hmatheat_showcol
     input$hmatheat_cluster_rows
     input$hmatheat_cluster_cols
-    input$hmatheat_annot
-    input$inputannot_selcols
+    #heat_anno()
+    #input$hmatheat_annot
+    #input$inputannot_selcols
   }, {
+    print("Heatmap .....")
     req(nmf_obj_react())
     
     output$plot_hmatrixheat <- renderPlot({
@@ -357,26 +392,25 @@ function(input, output, session) {
       hmat <- HMatrix(nmf_obj_react(), k = k)
       #print(hmat)
       
-      if (input$hmatheat_annot & !is.null(annot_react()) & length(input$inputannot_selcols) > 0) {
-        
-        # Build Heatmap annotation
-        # heat_anno <- HeatmapAnnotation(df = data.frame(Celltype = annot_react()$Celltype),
-        #                                #col = type.colVector,
-        #                                show_annotation_name = FALSE, na_col = "white")
-        annot <- annot_react()
-        annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
-        
-        
-        annot <- annot[, colnames(annot) %in% input$inputannot_selcols]
-        
-        heat_anno <- HeatmapAnnotation(df = annot,
-                                       #col = type.colVector,
-                                       show_annotation_name = FALSE, na_col = "white")
-        
-      } else {
-        heat_anno <- NULL
-      }
-      
+      # if (input$hmatheat_annot & !is.null(annot_react()) & length(input$inputannot_selcols) > 0) {
+      #   
+      #   # Build Heatmap annotation
+      #   # heat_anno <- HeatmapAnnotation(df = data.frame(Celltype = annot_react()$Celltype),
+      #   #                                #col = type.colVector,
+      #   #                                show_annotation_name = FALSE, na_col = "white")
+      #   annot <- annot_react()
+      #   annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
+      #   
+      #   
+      #   annot <- annot[, colnames(annot) %in% input$inputannot_selcols]
+      #   
+      #   heat_anno <- HeatmapAnnotation(df = annot,
+      #                                  #col = type.colVector,
+      #                                  show_annotation_name = FALSE, na_col = "white")
+      #   
+      # } else {
+      #   heat_anno <- NULL
+      # }
       
       Heatmap(hmat, 
               col = viridis(100),
@@ -386,10 +420,13 @@ function(input, output, session) {
               show_column_dend            = TRUE, 
               heatmap_legend_param = 
                 list(color_bar = "continuous", legend_height=unit(2, "cm")),
-              top_annotation    = heat_anno,
+              #top_annotation    = heat_anno,
+              top_annotation    = heat_anno(),
               show_column_names = input$hmatheat_showcol,
               cluster_rows      = input$hmatheat_cluster_rows,
               show_row_names    = FALSE)
+      
+      
       
       
     },
