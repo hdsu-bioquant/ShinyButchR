@@ -46,7 +46,10 @@ function(input, output, session) {
     #reticulate::virtualenv_install("pytensor_env", packages = c("tensorflow"))
     reticulate::use_virtualenv("pytensor_env", required = T)
     library("tensorflow")
-    tensorflow::install_tensorflow(method = "virtualenv", envname = "pytensor_env")
+    #tensorflow::install_tensorflow(method = "virtualenv", envname = "pytensor_env")
+    #Collecting tensorflow-cpu==2.2.0
+    #tensorflow::install_tensorflow(method = "virtualenv", version = "2.2.0-cpu", envname = "pytensor_env")
+    tensorflow::install_tensorflow(method = "virtualenv", version = "cpu", envname = "pytensor_env")
     #reticulate::use_python("/usr/bin/python3")
     #print(reticulate::py_config())
     #print("tensorflow available: ")
