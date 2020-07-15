@@ -28,12 +28,12 @@ function(input, output, session) {
   #----------------------------------------------------------------------------#
   #                            Startup config                                  #
   #----------------------------------------------------------------------------#
-  if (Sys.info()[["sysname"]] == "Darwin") {
+  if (file.exists(".localtf")) {
+    print("using local TensorFlow")
+  } else if (Sys.info()[["sysname"]] == "Darwin") {
     # When running locally use conda env
     reticulate::use_condaenv("tensor2pip", required = TRUE)
     print(reticulate::py_config())
-  } else if (file.exists(".localtf")) {
-    print("using local TensorFlow")
   } else {
     
     # When running on shinyapps.io, create a virtualenv
