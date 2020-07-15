@@ -355,54 +355,60 @@ dashboardPage(
         #                        H matrix Heatmap                              #
         #----------------------------------------------------------------------#
         fluidRow(
-          box(
-            title = "H Matrix Heatmap", 
-            width = 3, 
-            height = 350,
-            solidHeader = TRUE, status = "primary",
-            uiOutput("sel_K"),
-            
-            prettySwitch(
-              inputId = "hmatheat_showcol",
-              label = "Column names",
-              value = TRUE,
-              status = "success",
-              fill = TRUE
-            ), 
-            
-            prettySwitch(
-              inputId = "hmatheat_cluster_rows",
-              label = "Cluster rows",
-              value = TRUE,
-              status = "success",
-              fill = TRUE
-            ),
-            
-            prettySwitch(
-              inputId = "hmatheat_cluster_cols",
-              label = "Cluster columns",
-              value = TRUE,
-              status = "success",
-              fill = TRUE
-            ),
-            
-            prettySwitch(
-              inputId = "hmatheat_annot",
-              label = "Show annotation",
-              value = TRUE,
-              status = "success",
-              fill = TRUE
-            ),
-            
-            uiOutput("inputannot_selcols")
-            
-          ),
+          sel_KUI("HHeat"),
+          # box(
+          #   title = "H Matrix Heatmap", 
+          #   width = 3, 
+          #   height = 350,
+          #   solidHeader = TRUE, status = "primary",
+          #   sel_KUI("HHeat"),
+          #   #sel_KUI("HHeat-sel_k"),
+          #   #sel_KUI("sel_K"),
+          #   #sel_KUI("sel_K2"),
+          #   #uiOutput("sel_K"),
+          #   
+          #   prettySwitch(
+          #     inputId = "hmatheat_showcol",
+          #     label = "Column names",
+          #     value = TRUE,
+          #     status = "success",
+          #     fill = TRUE
+          #   ), 
+          #   
+          #   prettySwitch(
+          #     inputId = "hmatheat_cluster_rows",
+          #     label = "Cluster rows",
+          #     value = TRUE,
+          #     status = "success",
+          #     fill = TRUE
+          #   ),
+          #   
+          #   prettySwitch(
+          #     inputId = "hmatheat_cluster_cols",
+          #     label = "Cluster columns",
+          #     value = TRUE,
+          #     status = "success",
+          #     fill = TRUE
+          #   ),
+          #   
+          #   prettySwitch(
+          #     inputId = "hmatheat_annot",
+          #     label = "Show annotation",
+          #     value = TRUE,
+          #     status = "success",
+          #     fill = TRUE
+          #   ),
+          #   
+          #   uiOutput("inputannot_selcols")
+          #   
+          # ),
           box(
             #title = "Title 2", 
             width = 9, 
             height = 350,
             solidHeader = TRUE,
-            plotOutput(outputId = "plot_hmatrixheat")
+            #plotOutput(outputId = "plot_hmatrixheat")
+            HHeatmapServerUI("HHeat")
           )
         ),
         
