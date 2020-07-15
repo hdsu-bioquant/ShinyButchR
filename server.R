@@ -4,6 +4,7 @@ library(cowplot)
 library(shinyjs)
 library(ComplexHeatmap)
 library(viridis)
+library(umap)
 
 function(input, output, session) {
   sendSweetAlert(
@@ -315,13 +316,22 @@ function(input, output, session) {
   })
   
   ##--------------------------------------------------------------------------##
-  ##                                 NMF Heatmap                              ##
+  ##                               NMF Heatmap                                ##
   ##--------------------------------------------------------------------------##
   # K selector module
   sel_KServer("HHeat", nmf_obj_react, annot_react, 
               colsel_label = "Select columns to use", colsel_multi = TRUE)
   # Heatmap module
   HHeatmapServer("HHeat", nmf_obj_react, annot_react)
+  
+  ##--------------------------------------------------------------------------##
+  ##                              NMF H matrix UMAP                           ##
+  ##--------------------------------------------------------------------------##
+  # K selector module
+  sel_KServer("HUMAP", nmf_obj_react, annot_react, 
+              colsel_label = "Select a column to color the UMAP", colsel_multi = FALSE)
+  # UMAP module
+  humapServer("HUMAP", nmf_obj_react, annot_react)
   
   ##--------------------------------------------------------------------------##
   ##                             NMF Recovery plots                           ##

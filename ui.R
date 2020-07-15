@@ -279,10 +279,23 @@ dashboardPage(
         ),
         
         #----------------------------------------------------------------------#
+        #                        UMAP H matrix                                 #
+        #----------------------------------------------------------------------#
+        fluidRow(
+          sel_KrecovUI("HUMAP", "H Matrix UMAP"),
+          box(
+            width = 9, 
+            height = 350,
+            solidHeader = TRUE,
+            humapUI("HUMAP")
+          )
+        ),
+        
+        #----------------------------------------------------------------------#
         #                        Recovery Plots                                #
         #----------------------------------------------------------------------#
         fluidRow(
-          sel_KrecovUI("recov"),
+          sel_KrecovUI("recov", "Recovery Plots"),
           box(
             width = 9, 
             height = 350,

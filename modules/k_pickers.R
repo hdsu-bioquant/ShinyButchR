@@ -102,10 +102,10 @@ sel_KUI <- function(id) {
 #           UI  K picker and Annot picker Recovery plots                       #
 #------------------------------------------------------------------------------#
 
-sel_KrecovUI <- function(id) {
+sel_KrecovUI <- function(id, title) {
   ns <- NS(id)
   box(
-    title = "Recovery Plots", 
+    title = title, 
     width = 3, 
     height = 350,
     solidHeader = TRUE, status = "primary",
@@ -161,7 +161,7 @@ HHeatmapServer <- function(id, nmf_obj, annot_react) {
       heat_anno(hanno)
     })
     
-    
+    # Heatmap
     observeEvent({
       nmf_obj()
       heat_anno()
@@ -195,7 +195,91 @@ HHeatmapServer <- function(id, nmf_obj, annot_react) {
   })
 }
 
+#------------------------------------------------------------------------------#
+#                        UMAP H matrix Server & UI                             #
+#------------------------------------------------------------------------------#
+humapUI <- function(id) {
+  plotOutput(NS(id, "plot_HUMAP"))
+}
 
+humapServer <- function(id, nmf_obj, annot_react) {
+  moduleServer(id, function(input, output, session) {
+    
+    
+    # Heatmap Annot
+    umap_df <- reactiveVal(NULL)
+    observeEvent({
+      nmf_obj()
+      input$sel_K
+    }, {
+      req(nmf_obj())
+      
+      k <- input$sel_K
+      hmat <- HMatrix(nmf_obj(), k = k)
+      umapView <- umap(t(hmat))
+      
+      umapView_df <- as.data.frame(umapView$layout)
+      colnames(umapView_df) <- c("UMAP1", "UMAP2")
+      
+      annot <- annot_react() %>% 
+        mutate(sampleID = .[[1]])
+        
+      
+      umapView_df <- umapView_df %>%
+        rownames_to_column("sampleID") %>% 
+        left_join(annot, by = "sampleID")
+      
+      
+      
+      
+      #print(umapView_df)
+      umap_df(umapView_df)
+    })
+    
+    
+    observeEvent({
+      #nmf_obj()
+      #input$sel_K
+      umap_df()
+      input$inputannot_selcols
+    }, {
+      #req(nmf_obj())
+      output$plot_HUMAP <- renderPlot({
+        
+        #print(umap_df())
+        
+        req(nmf_obj())
+        req(input$sel_K)
+        
+        
+        umap_df() %>%
+          #rownames_to_column("sampleID") %>% 
+          #dplyr::select( !!! syms(c("chr", "start", "end", trackid))) %>% 
+          
+          #left_join(rna_annotation, by = "sampleID") %>% 
+          
+          
+          ggplot(aes(x=UMAP1, y=UMAP2, color = !! sym(input$inputannot_selcols))) + 
+          geom_point(size = 1.5, alpha = 0.95) + 
+          #scale_color_manual(values = type_colVector) +
+          theme_cowplot()
+          
+        
+        
+        # if (is.character(annot_char) | is.factor(annot_char)) {
+        #   recovery_plot(hmat, annot_char)
+        # } else {
+        #   ggplot() + 
+        #     annotate("text", x = 0, y = 0, 
+        #              label = c("Please select a categorical variable")) +
+        #     theme_void()
+        # }
+      },
+      height = 300
+      )
+    })
+  })
+}
 
 
 
