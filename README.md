@@ -1,2 +1,2 @@
-# shinyWurst
-Shiny app to run NMF using the package Bratwurst
+# ShinyButcheR
+Shiny app to run NMF using the package ButcheR
