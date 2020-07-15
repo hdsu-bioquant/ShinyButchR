@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------#
 #                 Server Make K picker and Annot picker                        #
 #------------------------------------------------------------------------------#
-sel_KServer <- function(id, nmf_obj, annot_react) {
+sel_KServer <- function(id, nmf_obj, annot_react, colsel_label, colsel_multi) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -34,12 +34,12 @@ sel_KServer <- function(id, nmf_obj, annot_react) {
         ns <- NS(id)
         pickerInput(
           inputId  = ns("inputannot_selcols"),
-          label    = "Select columns to use", 
+          label    = colsel_label, 
           choices  = colnames(annot_react())[-1],
           selected = colnames(annot_react())[2],
           options = list(
             `actions-box` = TRUE), 
-          multiple = TRUE
+          multiple = colsel_multi
         )
       })
 
@@ -53,11 +53,6 @@ sel_KServer <- function(id, nmf_obj, annot_react) {
 
 sel_KUI <- function(id) {
   ns <- NS(id)
-  #print(paste("ui", ns(id)))
-  print(paste("ui", ns("sel_K")))
-  
-  #uiOutput(ns("sel_K"))
-  
   box(
     title = "H Matrix Heatmap", 
     width = 3, 
@@ -103,11 +98,28 @@ sel_KUI <- function(id) {
   
 }
 
+#------------------------------------------------------------------------------#
+#           UI  K picker and Annot picker Recovery plots                       #
+#------------------------------------------------------------------------------#
+
+sel_KrecovUI <- function(id) {
+  ns <- NS(id)
+  box(
+    title = "Recovery Plots", 
+    width = 3, 
+    height = 350,
+    solidHeader = TRUE, status = "primary",
+    uiOutput(ns("sel_K")),
+    uiOutput(ns("inputannot_selcols"))
+  )
+}
+
+
 
 #------------------------------------------------------------------------------#
 #                               Heatmap Server & UI                            #
 #------------------------------------------------------------------------------#
-HHeatmapServerUI <- function(id) {
+HHeatmapUI <- function(id) {
   plotOutput(NS(id, "plot_hmatrixheat"))
 }
 
@@ -136,7 +148,6 @@ HHeatmapServer <- function(id, nmf_obj, annot_react) {
       
       if (input$hmatheat_annot & !is.null(annot_react()) & length(input$inputannot_selcols) > 0) {
         # Build Heatmap annotation
-        #print("Heatmap Annot ..... update?")
         annot <- annot_react()
         annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
         annot <- annot[, colnames(annot) %in% input$inputannot_selcols]
@@ -147,26 +158,17 @@ HHeatmapServer <- function(id, nmf_obj, annot_react) {
       } else {
         hanno <- NULL
       }
-      
-      
       heat_anno(hanno)
     })
     
-    # Heatmap
+    
     observeEvent({
       nmf_obj()
       heat_anno()
       input$sel_K
-      #input$hmatheat_showcol
-      #input$hmatheat_cluster_rows
-      #input$hmatheat_cluster_cols
-      #heat_anno()
-      #input$hmatheat_annot
-      #input$inputannot_selcols
     }, {
       #print("Heatmap .....")
       req(nmf_obj())
-      
       output$plot_hmatrixheat <- renderPlot({
         req(nmf_obj())
         req(input$sel_K)
@@ -179,9 +181,8 @@ HHeatmapServer <- function(id, nmf_obj, annot_react) {
                 cluster_columns             = input$hmatheat_cluster_cols,
                 clustering_distance_columns = "pearson",
                 show_column_dend            = TRUE, 
-                heatmap_legend_param = 
-                  list(color_bar = "continuous", legend_height=unit(2, "cm")),
-                #top_annotation    = heat_anno,
+                # heatmap_legend_param = 
+                #   list(color_bar = "continuous", legend_height=unit(2, "cm")),
                 top_annotation    = heat_anno(),
                 show_column_names = input$hmatheat_showcol,
                 cluster_rows      = input$hmatheat_cluster_rows,
@@ -190,8 +191,68 @@ HHeatmapServer <- function(id, nmf_obj, annot_react) {
       #width  = 100, 
       height = 330
       )
-      
     })
-    
   })
 }
+
+
+
+
+
+
+#------------------------------------------------------------------------------#
+#                        Recovery plots Server & UI                            #
+#------------------------------------------------------------------------------#
+recovplotsUI <- function(id) {
+  plotOutput(NS(id, "plot_recoveryplots"))
+}
+
+recovplotsServer <- function(id, nmf_obj, annot_react) {
+  moduleServer(id, function(input, output, session) {
+    
+    observeEvent({
+      nmf_obj()
+      input$sel_K
+      input$inputannot_selcols
+    }, {
+      #req(nmf_obj())
+      output$plot_recoveryplots <- renderPlot({
+        req(nmf_obj())
+        req(input$sel_K)
+        
+        k <- input$sel_K
+        hmat <- HMatrix(nmf_obj(), k = k)
+        annot <- annot_react()
+        # annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
+        # annot <- annot[, input$inputannot_selcols_recov]
+        
+        # make factor of selected annotation
+        annot_char <- setNames(annot[, input$inputannot_selcols], 
+                               annot[,1])
+        if (is.character(annot_char) | is.factor(annot_char)) {
+          recovery_plot(hmat, annot_char)
+        } else {
+          ggplot() + 
+            annotate("text", x = 0, y = 0, 
+                     label = c("Please select a categorical variable")) +
+            theme_void()
+        }
+      },
+      height = 300
+      )
+    })
+  })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

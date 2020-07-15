@@ -14,7 +14,6 @@ function(input, output, session) {
       tags$strong(h1("Welcome to")),
       tags$br(),
       tags$strong(h1("ShinyButchR")),
-      #tags$img(src="map_my_corona_logo.png",height="100px"),
       tags$br(),
       tags$br(),
       "Loading ...", 
@@ -39,14 +38,9 @@ function(input, output, session) {
     # When running on shinyapps.io, create a virtualenv
     reticulate::virtualenv_create(envname = "pytensor_env",
                                  python = "/usr/bin/python3")
-    # reticulate::use_virtualenv("pytensor_env", required = T)
-    # reticulate::virtualenv_install("pytensor_env",
-    #                                packages = c("numpy", "tensorflow"))
     reticulate::virtualenv_install("pytensor_env", packages = c("numpy"))
-    #reticulate::virtualenv_install("pytensor_env", packages = c("tensorflow"))
     reticulate::use_virtualenv("pytensor_env", required = T)
     library("tensorflow")
-    #tensorflow::install_tensorflow(method = "virtualenv", envname = "pytensor_env")
     #Collecting tensorflow-cpu==2.2.0
     #tensorflow::install_tensorflow(method = "virtualenv", version = "2.2.0-cpu", envname = "pytensor_env")
     tensorflow::install_tensorflow(method = "virtualenv", version = "cpu", envname = "pytensor_env")
@@ -323,227 +317,21 @@ function(input, output, session) {
   ##--------------------------------------------------------------------------##
   ##                                 NMF Heatmap                              ##
   ##--------------------------------------------------------------------------##
-  # K selector
-  # output$sel_K <- renderUI({
-  #   req(nmf_obj_react())
-  #   ks <- nmf_obj_react()@OptKStats$k
-  #   optk <- nmf_obj_react()@OptK
-  #   print(optk)
-  #   print(length(optk))
-  #   selectInput(
-  #     inputId = "sel_K",
-  #     #label = "Select factorization rank:",
-  #     label = "Select K:",
-  #     choices = ks,
-  #     selected = ifelse(length(optk) == 0,
-  #                        ks[1], max(optk)),
-  #     multiple = FALSE
-  #   )
-  # })
-  #sel_KServer("sel_K", reactive(nmf_obj_react))
-  #sel_KServer("sel_K", reactive(nmf_obj_react()))
-  #sel_KServer("sel_K", nmf_obj_react)
-  
-  
-  
-  #sel_KServer("sel_K2", nmf_obj_react)
-  
-  #observeEvent(HHeatk, print(HHeatk))
-  
-  
-  # # Heatmap Annot
-  # heat_anno <- reactiveVal(NULL)
-  # observeEvent({
-  #   input$hmatheat_annot
-  #   input$inputannot_selcols
-  #   #input$sel_K
-  #   #input[["HHeat-sel_K"]]
-  #   nmf_obj_react()
-  # }, {
-  #   print("Heatmap Annot .....")
-  #   #req(nmf_obj_react())
-  #   req(nmf_obj_react())
-  #   req(input$sel_K)
-  #   #req(input$inputannot_selcols)
-  #   
-  #   #k <- input$sel_K
-  #   k <- input[["HHeat-sel_K"]]
-  #   
-  #   hmat <- HMatrix(nmf_obj_react(), k = k)
-  #   
-  #   if (input$hmatheat_annot & !is.null(annot_react()) & length(input$inputannot_selcols) > 0) {
-  #     # Build Heatmap annotation
-  #     annot <- annot_react()
-  #     annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
-  #     annot <- annot[, colnames(annot) %in% input$inputannot_selcols]
-  #     
-  #     hanno <- HeatmapAnnotation(df = annot,
-  #                                #col = type.colVector,
-  #                                show_annotation_name = FALSE, na_col = "white")
-  #   } else {
-  #     hanno <- NULL
-  #   }
-  #   
-  #   heat_anno(hanno)
-  # })
-  
-  
-  sel_KServer("HHeat", nmf_obj_react, annot_react)
+  # K selector module
+  sel_KServer("HHeat", nmf_obj_react, annot_react, 
+              colsel_label = "Select columns to use", colsel_multi = TRUE)
+  # Heatmap module
   HHeatmapServer("HHeat", nmf_obj_react, annot_react)
-  #HeatmapServer("HHeat", nmf_obj_react)
-  
-  
-  # Heatmap
-  # observeEvent({
-  #   nmf_obj_react()
-  #   input$sel_K
-  #   input$hmatheat_showcol
-  #   input$hmatheat_cluster_rows
-  #   input$hmatheat_cluster_cols
-  #   #heat_anno()
-  #   #input$hmatheat_annot
-  #   #input$inputannot_selcols
-  # }, {
-  #   #print("Heatmap .....")
-  #   req(nmf_obj_react())
-  #   
-  #   output$plot_hmatrixheat <- renderPlot({
-  #     req(nmf_obj_react())
-  #     req(input$sel_K)
-  #     #req(input$inputannot_selcols)
-  #     
-  #     k <- input$sel_K
-  #     hmat <- HMatrix(nmf_obj_react(), k = k)
-  #     #print(hmat)
-  #     
-  #     # if (input$hmatheat_annot & !is.null(annot_react()) & length(input$inputannot_selcols) > 0) {
-  #     #   
-  #     #   # Build Heatmap annotation
-  #     #   # heat_anno <- HeatmapAnnotation(df = data.frame(Celltype = annot_react()$Celltype),
-  #     #   #                                #col = type.colVector,
-  #     #   #                                show_annotation_name = FALSE, na_col = "white")
-  #     #   annot <- annot_react()
-  #     #   annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
-  #     #   
-  #     #   
-  #     #   annot <- annot[, colnames(annot) %in% input$inputannot_selcols]
-  #     #   
-  #     #   heat_anno <- HeatmapAnnotation(df = annot,
-  #     #                                  #col = type.colVector,
-  #     #                                  show_annotation_name = FALSE, na_col = "white")
-  #     #   
-  #     # } else {
-  #     #   heat_anno <- NULL
-  #     # }
-  #     
-  #     Heatmap(hmat, 
-  #             col = viridis(100),
-  #             name = "Exposure",
-  #             cluster_columns             = input$hmatheat_cluster_cols,
-  #             clustering_distance_columns = "pearson",
-  #             show_column_dend            = TRUE, 
-  #             heatmap_legend_param = 
-  #               list(color_bar = "continuous", legend_height=unit(2, "cm")),
-  #             #top_annotation    = heat_anno,
-  #             top_annotation    = heat_anno(),
-  #             show_column_names = input$hmatheat_showcol,
-  #             cluster_rows      = input$hmatheat_cluster_rows,
-  #             show_row_names    = FALSE)
-  #     
-  #     
-  #     
-  #     
-  #   },
-  #   #width  = 100, 
-  #   height = 330
-  #   )
-  #   
-  # })
   
   ##--------------------------------------------------------------------------##
   ##                             NMF Recovery plots                           ##
   ##--------------------------------------------------------------------------##
   # K selector
-  output$sel_Krecov <- renderUI({
-    req(nmf_obj_react())
-    ks <- nmf_obj_react()@OptKStats$k
-    optk <- nmf_obj_react()@OptK
-    #print(optk)
-    #print(length(optk))
-    selectInput(
-      inputId = "sel_Krecov",
-      #label = "Select factorization rank:",
-      label = "Select K:",
-      choices = ks,
-      selected = ifelse(length(optk) == 0,
-                        ks[1], max(optk)),
-      multiple = FALSE
-    )
-  })
-  
-  # Selector columns to use
-  output$inputannot_selcols_recov <- renderUI({
-    req(annot_react())
-    
-    pickerInput(
-      inputId  = "inputannot_selcols_recov",
-      label    = "Select a column with a categorical annotation to estimate the recovery plots", 
-      choices  = colnames(annot_react())[-1],
-      selected = colnames(annot_react())[2],
-      options = list(
-        `actions-box` = TRUE), 
-      multiple = FALSE
-    )
-  })
-  
-  
-  observeEvent({
-    nmf_obj_react()
-    input$sel_Krecov
-    input$inputannot_selcols_recov
-  }, {
-    #print("Heatmap .....")
-    req(nmf_obj_react())
-    
-    output$plot_recoveryplots <- renderPlot({
-      req(nmf_obj_react())
-      req(input$sel_Krecov)
-      #req(input$inputannot_selcols)
-      
-      k <- input$sel_Krecov
-      hmat <- HMatrix(nmf_obj_react(), k = k)
-      
-      annot <- annot_react()
-      # annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
-      # annot <- annot[, input$inputannot_selcols_recov]
-      
-      annot_char <- setNames(annot[, input$inputannot_selcols_recov], 
-                             annot[,1])
-      
-      if (is.character(annot_char) | is.factor(annot_char)) {
-        recovery_plot(hmat, annot_char)
-      } else {
-        ggplot() + 
-          annotate("text", x = 0, y = 0, 
-                   label = c("Please select a categorical variable")) +
-          theme_void()
-        
-      }
-      
-      
-      
-      
-    },
-    height = 300
-    )
-    
-    
-  })
-  
-  
-  
-  
-  
+  sel_KServer("recov", nmf_obj_react, annot_react, 
+              colsel_label = "Select a column with a categorical annotation to estimate the recovery plots", 
+              colsel_multi = FALSE)
+  # Recovery plots
+  recovplotsServer("recov", nmf_obj_react, annot_react)
   
   ##--------------------------------------------------------------------------##
   ##                                 NMF Riverplot                            ##
@@ -573,15 +361,24 @@ function(input, output, session) {
       req(nmf_obj_react())
       ranks <- input$sel_riverRange
       ranks <- ranks[1]:ranks[2]
-      # (coords <- plot(Bratwurst::generateRiverplot(nmf_obj_react()),
-      #                 plot_area = 1, autoy=FALSE))
-      log <- capture.output({
-        res <- plot(generateRiverplot(nmf_obj_react(),
-                                      edges.cutoff = input$sel_edges_cutoff,
-                                      ranks = ranks),
-                    plot_area = 1, autoy=FALSE);
-      })
-      #print(res);
+      
+      if (length(ranks) > 1) {
+        # (coords <- plot(Bratwurst::generateRiverplot(nmf_obj_react()),
+        #                 plot_area = 1, autoy=FALSE))
+        log <- capture.output({
+          res <- plot(generateRiverplot(nmf_obj_react(),
+                                        edges.cutoff = input$sel_edges_cutoff,
+                                        ranks = ranks),
+                      plot_area = 1, autoy=FALSE);
+        })
+        #print(res);
+      } else {
+        ggplot() + 
+          annotate("text", x = 0, y = 0, 
+                   label = c("Please select a range of two or more factorization ranks")) +
+          theme_void()
+      }
+      
       
     },
     height = 400

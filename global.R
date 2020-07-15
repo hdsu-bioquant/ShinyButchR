@@ -3,6 +3,7 @@
 #------------------------------------------------------------------------------#
 source("modules/recoveryPlots.R")
 source("modules/k_pickers.R")
+source("modules/FAQ.R")
 
 #------------------------------------------------------------------------------#
 #           read data - Country Polygons GeoJSON as sp                         #
