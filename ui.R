@@ -4,12 +4,12 @@ library(shinyjs)
 
 
 dashboardPage(
-  title="ShinyWurst",
+  title="ShinyButchR",
   #----------------------------------------------------------------------------#
   #                                Header                                      #
   #----------------------------------------------------------------------------#
   dashboardHeader(
-    title = "ShinyWurst",
+    title = "ShinyButchR",
     # title = tags$a(href=".",
     #                tags$img(src="map_my_corona_logo.png",height="50px")),
     tags$li(class = "dropdown",
@@ -30,7 +30,7 @@ dashboardPage(
     sidebarMenu(
       id = "mainmenu",
       br(),
-      h6("ShinyWurst is an app to run ", align = "center"),
+      h6("ShinyButchR is an app to run ", align = "center"),
       h6("Non-Negative Matrix Factorization (NMF) ", align = "center"),
       h6("on a small input matrix", align = "center"),
       h6("Using the Bratwurst package", align = "center"),
@@ -264,11 +264,11 @@ dashboardPage(
             id = "help_main",
             width = 5,
             height = 400,
-            title = h2("ShinyWurst", style="text-align: center;") ,
+            title = h2("ShinyButchR", style="text-align: center;") ,
             status = "warning",
             background = "black",
             tags$hr(),
-            h4("ShinyWurst is an app to run 
+            h4("ShinyButchR is an app to run 
                Non-Negative Matrix Factorization (NMF) 
                on a small input matrix
                using the Bratwurst package", align = "center"),
@@ -285,7 +285,7 @@ dashboardPage(
             #status = "warning",
             background = "black",
             #tags$hr(),
-            h4("ShinyWurst was developed by the 
+            h4("ShinyButchR was developed by the 
             Biomedical Genomics Group @ Health Data Science Unit 
             at the BioQuant Center and Medical Faculty Heidelberg",
                align = "center"),
@@ -296,14 +296,14 @@ dashboardPage(
             
             tags$hr(),
             
-            h1(tags$a(href="https://github.com/hdsu-bioquant/shinyWurst", 
+            h1(tags$a(href="https://github.com/hdsu-bioquant/ShinyButchR", 
                       target="_blank",
                       icon("github")), align = "center"),
             #h1(icon("github"), align = "center"),
             h4("If you have any suggestion please create an issue in our GitHub repository",
-               tags$a(href="https://github.com/hdsu-bioquant/shinyWurst", 
+               tags$a(href="https://github.com/hdsu-bioquant/ShinyButchR", 
                       target="_blank", 
-                      "hdsu-bioquant/shinyWurst"),
+                      "hdsu-bioquant/ShinyButchR"),
                align = "center")
             
           )

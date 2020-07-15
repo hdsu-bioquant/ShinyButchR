@@ -13,7 +13,7 @@ function(input, output, session) {
       tags$br(),
       tags$strong(h1("Welcome to")),
       tags$br(),
-      tags$strong(h1("ShinyButcheR")),
+      tags$strong(h1("ShinyButchR")),
       #tags$img(src="map_my_corona_logo.png",height="100px"),
       tags$br(),
       tags$br(),
@@ -62,7 +62,7 @@ function(input, output, session) {
   }
   library(reticulate)
   #library(Bratwurst)
-  library(ButcheR)
+  library(ButchR)
   
   #----------------------------------------------------------------------------#
   #                            Reactive Values                                 #
@@ -75,7 +75,7 @@ function(input, output, session) {
       tags$br(),
       tags$strong(h1("Welcome to")),
       tags$br(),
-      tags$strong(h1("ShinyButcheR")),
+      tags$strong(h1("ShinyButchR")),
       #tags$img(src="map_my_corona_logo.png",height="100px"),
       tags$br(),
       tags$br(),
