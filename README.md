@@ -1,2 +1,2 @@
-# ShinyButcheR
-Shiny app to run NMF using the package ButcheR
+# ShinyButchR
+Shiny app to run NMF using the package ButchR
