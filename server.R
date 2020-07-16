@@ -47,6 +47,16 @@ function(input, output, session) {
     # When running locally use conda env
     reticulate::use_condaenv("tensor2pip", required = TRUE)
     print(reticulate::py_config())
+  } else if (file.exists("env/pytensor_env.zip")) {
+    unzip("env/pytensor_env.zip")
+    print("files in app")
+    print(list.dirs("."))
+    print(list.files("."))
+    print("files in virtual")
+    dir.create("/home/shiny/.virtualenvs/", recursive = TRUE)
+    print(list.files("/home/shiny/", all.files = TRUE))
+    file.link(from = "pytensor_env", to = "/home/shiny/.virtualenvs/pytensor_env")
+    reticulate::use_virtualenv("pytensor_env", required = T)
   } else {
     
     # When running on shinyapps.io, create a virtualenv
@@ -450,7 +460,8 @@ function(input, output, session) {
     # This function returns a string which tells the client
     # browser what name to use when saving the file.
     filename = function() {
-      "NMF_object.RDS"
+      #"NMF_object.RDS"
+      "folder.zip"
     },
     
     # This function should write data to a file given to it by
@@ -459,7 +470,14 @@ function(input, output, session) {
       # sep <- switch(input$filetype, "csv" = ",", "tsv" = "\t")
       
       # Write to a file specified by the 'file' argument
-      saveRDS(nmf_obj_react(), file)
+      #saveRDS(nmf_obj_react(), file)
+      zip(zipfile = "folder", files = "/home/shiny/.virtualenvs/pytensor_env/")
+      file.copy("folder.zip", file)
+      # copyDirectory(
+      #   from = "/Users/andresq/phd/projects/dev_ButchR/ShinyButchR/data/", 
+      #   #from = "/home/shiny/.virtualenvs/pytensor_env/", 
+      #   to= file)
+      
       
     }
   )
