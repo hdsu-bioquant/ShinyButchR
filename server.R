@@ -7,24 +7,37 @@ library(viridis)
 library(umap)
 
 function(input, output, session) {
-  sendSweetAlert(
-    session = session,
-    title = NULL,
-    text = tags$span(
-      tags$br(),
-      tags$strong(h1("Welcome to")),
-      tags$br(),
-      tags$strong(h1("ShinyButchR")),
-      tags$br(),
-      tags$br(),
-      "Loading ...", 
-      #tags$b("Demo"),
-      "Please wait until this message closes", 
-      tags$br()
-    ),
-    html = TRUE
-  )
-  
+  # sendSweetAlert(
+  #   session = session,
+  #   title = NULL,
+  #   text = tags$span(
+  #     tags$br(),
+  #     tags$strong(h1("Welcome to")),
+  #     tags$br(),
+  #     tags$strong(h1("ShinyButchR")),
+  #     tags$br(),
+  #     tags$br(),
+  #     "Loading ...", 
+  #     #tags$b("Demo"),
+  #     "Please wait until this message closes", 
+  #     tags$br()
+  #   ),
+  #   html = TRUE
+  # )
+  # waiter_show( # show the waiter
+  #   #spin_fading_circles() # use a spinner
+  #   #spin_loader(12)
+  #   spin_folding_cube()
+  #   #spin_cube_grid()
+  # )
+  # waiter_show(
+  #   
+  #   #spin_loader(12)
+  #   spin_folding_cube()
+  #   #spin_cube_grid()
+  # )
+  # 
+  Sys.sleep(5)
   #----------------------------------------------------------------------------#
   #                            Startup config                                  #
   #----------------------------------------------------------------------------#
@@ -61,6 +74,8 @@ function(input, output, session) {
   library(reticulate)
   #library(Bratwurst)
   library(ButchR)
+  
+  waiter_hide() # hide the waiter
   
   #----------------------------------------------------------------------------#
   #                            Reactive Values                                 #

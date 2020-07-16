@@ -1,6 +1,7 @@
 library(shinydashboard)
 library(shinyWidgets)
 library(shinyjs)
+library(waiter)
 
 
 dashboardPage(
@@ -80,6 +81,27 @@ dashboardPage(
   #----------------------------------------------------------------------------#
   dashboardBody(
     useShinyjs(),
+    use_waiter(), 
+    waiter_show_on_load(
+      tagList(
+        #     tags$br(),
+            tags$strong(h1("Welcome to")),
+        #     tags$br(),
+            tags$strong(h1("ShinyButchR")),
+        #     tags$br(),
+            tags$br(),
+        #     "Loading ...", 
+        #     #tags$b("Demo"),
+            h2("Please wait ... loading ButchR and TensorFlow"),
+            tags$br(),
+        html = spin_cube_grid(),
+        tags$br(),
+        tags$br()
+      )
+      #html = spin_folding_cube()
+    ),
+    #use_steward(),
+    
     tags$head(
       tags$style(
         HTML(".shiny-notification {
