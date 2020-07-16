@@ -37,7 +37,8 @@ function(input, output, session) {
   #   #spin_cube_grid()
   # )
   # 
-  Sys.sleep(5)
+  #waiter_hide() # hide the waiter
+  #Sys.sleep(5)
   #----------------------------------------------------------------------------#
   #                            Startup config                                  #
   #----------------------------------------------------------------------------#
@@ -47,16 +48,6 @@ function(input, output, session) {
     # When running locally use conda env
     reticulate::use_condaenv("tensor2pip", required = TRUE)
     print(reticulate::py_config())
-  } else if (file.exists("env/pytensor_env.zip")) {
-    unzip("env/pytensor_env.zip")
-    print("files in app")
-    print(list.dirs("."))
-    print(list.files("."))
-    print("files in virtual")
-    dir.create("/home/shiny/.virtualenvs/", recursive = TRUE)
-    print(list.files("/home/shiny/", all.files = TRUE))
-    file.link(from = "pytensor_env", to = "/home/shiny/.virtualenvs/pytensor_env")
-    reticulate::use_virtualenv("pytensor_env", required = T)
   } else {
     
     # When running on shinyapps.io, create a virtualenv
@@ -147,7 +138,7 @@ function(input, output, session) {
     
     
     updateNumericInput(session, "params_kmin", value = 2)
-    updateNumericInput(session, "params_kmax", value = 3)
+    updateNumericInput(session, "params_kmax", value = 10)
     updateNumericInput(session, "params_ninits", value = 2)
     updateNumericInput(session, "params_convthrs", value = 30)
     
@@ -196,8 +187,7 @@ function(input, output, session) {
     }
     
     
-    
-    
+    #shinyjs::reset("file1")
     inputMatrix_react(mymat)
   })
   
@@ -221,7 +211,30 @@ function(input, output, session) {
       )
       myannot <- NULL
     }
+    #shinyjs::reset("file_annot")
     annot_react(myannot)
+  })
+  
+  observeEvent({
+    annot_react()
+    inputMatrix_react()
+  }, {
+    req(inputMatrix_react())
+    req(annot_react())
+    xc <- colnames(inputMatrix_react())
+    ac <- annot_react()[,1]
+    
+    if (!all(xc %in% ac)) {
+      sendSweetAlert(
+        session = session,
+        title = "Annotation mismatch",
+        text = "please upload a valid annotation file. \n 
+        The first column should match the column names of the input matrix",
+        type = "error"
+      )
+      annot_react(NULL)
+    }
+    
   })
   
   ##--------------------------------------------------------------------------##
@@ -272,8 +285,8 @@ function(input, output, session) {
   ##--------------------------------------------------------------------------##
   observeEvent(input$clear_inputMatrix, {
     #reset("stringSequence")
-    reset("file1")
-    reset("file_annot")
+    shinyjs::reset("file1")
+    shinyjs::reset("file_annot")
     
     #clearstatus$clear <- TRUE
     inputMatrix_react(NULL)
@@ -290,6 +303,21 @@ function(input, output, session) {
   ##--------------------------------------------------------------------------##
   ##                                 Run NMF                                  ##
   ##--------------------------------------------------------------------------##
+  #w <- Waiter$new(html = spin_folding_cube())
+  w <- Waiter$new(html = tagList(
+    #     tags$br(),
+    tags$strong(h1("NMF in progress...")),
+    #     tags$br(),
+    tags$br(),
+    html = spin_cube_grid(),
+    tags$br(),
+    tags$strong(h1("Please wait for the results")),
+    #     tags$br(),
+    tags$br()
+  ))
+  
+  
+  
   #print(annot)
   observeEvent({
     #clean_start()
@@ -300,12 +328,17 @@ function(input, output, session) {
     req(inputMatrix_react())
     #print(annot)
     
-    sendSweetAlert(
-      session = session,
-      title = "NMF in progress...",
-      text = "Please wait for the results",
-      type = "info"
-    )
+    
+    w$show( )
+
+    
+    
+    # sendSweetAlert(
+    #   session = session,
+    #   title = "NMF in progress...",
+    #   text = "Please wait for the results",
+    #   type = "info"
+    # )
     
     
     nmf_exp <- runNMFtensor_lite(inputMatrix_react(),
@@ -323,6 +356,7 @@ function(input, output, session) {
     
     print("NMF results:")
     print(nmf_obj_react())
+    waiter_hide() # hide the waiter
     
     sendSweetAlert(
       session = session,
