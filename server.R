@@ -1,3 +1,5 @@
+options(shiny.maxRequestSize = 30*1024^2)
+#options(shiny.maxRequestSize = 30*1024^2)
 library(ggplot2)
 library(tidyverse)
 library(cowplot)
@@ -176,7 +178,7 @@ function(input, output, session) {
         type = "error"
       )
       mymat <- NULL
-    } else if (min(mymat) <=0) {
+    } else if (min(mymat) <0) {
       sendSweetAlert(
         session = session,
         title = "Invalid matrix",
@@ -297,6 +299,7 @@ function(input, output, session) {
     updateNumericInput(session, "params_ninits", value = 2)
     updateNumericInput(session, "params_convthrs", value = 40)
     
+    #HHeatmapServer_restart("HHeat")
     
   }, priority = 1000)
   
@@ -317,6 +320,8 @@ function(input, output, session) {
   ))
   
   
+  # HHeatmapServer_restart("HHeat", reactive(input$startNMF))
+  # HHeatmapServer_restart("HUMAP", reactive(input$startNMF))
   
   #print(annot)
   observeEvent({
@@ -325,6 +330,13 @@ function(input, output, session) {
     input$startNMF
   }, {
     
+    # HHeatmapServer_restart("HHeat")
+    # HHeatmapServer_restart("HUMAP")
+    # updateSliderTextInput(session, "sel_riverRange")
+    # updateSliderTextInput(session, "sel_edges_cutoff")
+    
+    nmf_obj_react(NULL)
+    #annot_react(NULL)
     req(inputMatrix_react())
     #print(annot)
     
@@ -378,8 +390,11 @@ function(input, output, session) {
   ##                               NMF Heatmap                                ##
   ##--------------------------------------------------------------------------##
   # K selector module
+  # sel_KServer("HHeat", nmf_obj_react, annot_react, 
+  #             colsel_label = "Select columns to use", colsel_multi = TRUE)
   sel_KServer("HHeat", nmf_obj_react, annot_react, 
-              colsel_label = "Select columns to use", colsel_multi = TRUE)
+              colsel_label = "Select columns to use", colsel_multi = TRUE,
+              reactive(input$startNMF))
   # Heatmap module
   HHeatmapServer("HHeat", nmf_obj_react, annot_react)
   
@@ -388,7 +403,7 @@ function(input, output, session) {
   ##--------------------------------------------------------------------------##
   # K selector module
   sel_KServer("HUMAP", nmf_obj_react, annot_react, 
-              colsel_label = "Select a column to color the UMAP", colsel_multi = FALSE)
+              colsel_label = "Select a column to color the UMAP", colsel_multi = FALSE, reactive(input$startNMF))
   # UMAP module
   humapServer("HUMAP", nmf_obj_react, annot_react)
   
@@ -398,7 +413,7 @@ function(input, output, session) {
   # K selector
   sel_KServer("recov", nmf_obj_react, annot_react, 
               colsel_label = "Select a column with a categorical annotation to estimate the recovery plots", 
-              colsel_multi = FALSE)
+              colsel_multi = FALSE, reactive(input$startNMF))
   # Recovery plots
   recovplotsServer("recov", nmf_obj_react, annot_react)
   
@@ -426,10 +441,12 @@ function(input, output, session) {
     req(nmf_obj_react())
     req(input$sel_riverRange)
     
+    
     output$plot_riverplot <- renderPlot({
       req(nmf_obj_react())
       ranks <- input$sel_riverRange
       ranks <- ranks[1]:ranks[2]
+      req(all(ranks %in% nmf_obj_react()@OptKStats$k))
       
       if (length(ranks) > 1) {
         # (coords <- plot(Bratwurst::generateRiverplot(nmf_obj_react()),

@@ -1,31 +1,61 @@
 #------------------------------------------------------------------------------#
 #                 Server Make K picker and Annot picker                        #
 #------------------------------------------------------------------------------#
-sel_KServer <- function(id, nmf_obj, annot_react, colsel_label, colsel_multi) {
+sel_KServer <- function(id, nmf_obj, annot_react, colsel_label, colsel_multi, newRun) {
   moduleServer(
     id,
     function(input, output, session) {
-      
       # Select K
-      output$sel_K <- renderUI({
-        #nmf_obj()
-        #req(nmf_obj())
-        
-        #ns <- session$ns
-        ns <- NS(id)
-        ks <- nmf_obj()@OptKStats$k
-        optk <- nmf_obj()@OptK
-        
-        selectInput(
-          inputId = ns("sel_K"),
-          #label = "Select factorization rank:",
-          label = "Select K:",
-          choices = ks,
-          selected = ifelse(length(optk) == 0,
-                            ks[1], max(optk)),
-          multiple = FALSE
-        )
-      })
+      observeEvent(nmf_obj(), {
+        output$sel_K <- renderUI({
+          #nmf_obj()
+          req(nmf_obj())
+          
+          
+          ns <- NS(id)
+          ks <- nmf_obj()@OptKStats$k
+          optk <- nmf_obj()@OptK
+          selectInput(
+            inputId = ns("sel_K"),
+            #label = "Select factorization rank:",
+            label = "Select K:",
+            choices = ks,
+            selected = ifelse(length(optk) == 0,
+                              ks[1], max(optk)),
+            multiple = FALSE
+          )
+          
+          # if (is.null(nmf_obj())) {
+          #   
+          #   selectInput(
+          #     inputId = ns("sel_K"),
+          #     #label = "Select factorization rank:",
+          #     label = "Select K:",
+          #     choices = NA,
+          #     selected = NA,
+          #     multiple = FALSE
+          #   )
+          #   
+          # } else {
+          #   ks <- nmf_obj()@OptKStats$k
+          #   optk <- nmf_obj()@OptK
+          #   
+          #   selectInput(
+          #     inputId = ns("sel_K"),
+          #     #label = "Select factorization rank:",
+          #     label = "Select K:",
+          #     choices = ks,
+          #     selected = ifelse(length(optk) == 0,
+          #                       ks[1], max(optk)),
+          #     multiple = FALSE
+          #   )
+          # }
+          
+          
+          
+        })
+      }, priority = 1000)
+      
       
       
       # Selector columns to use
@@ -42,10 +72,74 @@ sel_KServer <- function(id, nmf_obj, annot_react, colsel_label, colsel_multi) {
           multiple = colsel_multi
         )
       })
-
+      
     }
   )
 }
+# sel_KServer <- function(id, nmf_obj, annot_react, colsel_label, colsel_multi, newRun) {
+#   moduleServer(
+#     id,
+#     function(input, output, session) {
+#       
+#       #ns <- session$ns
+#       
+#       observeEvent(newRun(), {
+#         print(paste("run", newRun(), "null to ", id))
+#         ns <- NS(id)
+#         # 
+#         updateSelectInput(session, ns("sel_K"), selected = 1)
+#         updateSelectInput(session, ns("inputannot_selcols"))
+#         # updateSelectInput(session, "sel_K", selected = 1)
+#         # updateSelectInput(session, "inputannot_selcols")
+#         #heat_anno <- reactiveVal(NULL)
+#         print(input$sel_K)
+#         ##input$hmatheat_annot
+#         #input$inputannot_selcols
+#         #input$sel_K
+#         
+#       })
+#       
+#       
+#       # Select K
+#       output$sel_K <- renderUI({
+#         #nmf_obj()
+#         #req(nmf_obj())
+#         
+#         #ns <- session$ns
+#         ns <- NS(id)
+#         ks <- nmf_obj()@OptKStats$k
+#         optk <- nmf_obj()@OptK
+#         
+#         selectInput(
+#           inputId = ns("sel_K"),
+#           #label = "Select factorization rank:",
+#           label = "Select K:",
+#           choices = ks,
+#           selected = ifelse(length(optk) == 0,
+#                             ks[1], max(optk)),
+#           multiple = FALSE
+#         )
+#       })
+#       
+#       
+#       # Selector columns to use
+#       output$inputannot_selcols <- renderUI({
+#         req(annot_react())
+#         ns <- NS(id)
+#         pickerInput(
+#           inputId  = ns("inputannot_selcols"),
+#           label    = colsel_label, 
+#           choices  = colnames(annot_react())[-1],
+#           selected = colnames(annot_react())[2],
+#           options = list(
+#             `actions-box` = TRUE), 
+#           multiple = colsel_multi
+#         )
+#       })
+# 
+#     }
+#   )
+# }
 
 #------------------------------------------------------------------------------#
 #           UI  K picker and Annot picker & Heatmap handles                    #
@@ -139,6 +233,8 @@ HHeatmapServer <- function(id, nmf_obj, annot_react) {
       #req(nmf_obj_react())
       req(nmf_obj())
       req(input$sel_K)
+      req(input$sel_K %in% nmf_obj()@OptKStats$k)
+      
       #req(input$inputannot_selcols)
       k <- input$sel_K
       
@@ -172,6 +268,9 @@ HHeatmapServer <- function(id, nmf_obj, annot_react) {
       output$plot_hmatrixheat <- renderPlot({
         req(nmf_obj())
         req(input$sel_K)
+        req(input$sel_K %in% nmf_obj()@OptKStats$k)
+        
+        
         k <- input$sel_K
         hmat <- HMatrix(nmf_obj(), k = k)
         
@@ -319,6 +418,8 @@ humapServer <- function(id, nmf_obj, annot_react) {
       # Run UMAP
       req(nmf_obj())
       k <- input$sel_K
+      req(input$sel_K %in% nmf_obj()@OptKStats$k)
+      
       hmat <- HMatrix(nmf_obj(), k = k)
       umapView <- umap(t(hmat))
       # Make df and bind annotation
@@ -341,16 +442,22 @@ humapServer <- function(id, nmf_obj, annot_react) {
       #nmf_obj()
       #input$sel_K
       umap_df()
-      input$inputannot_selcols
+      #input$inputannot_selcols
     }, {
       #req(nmf_obj())
       output$plot_HUMAP <- renderPlot({
         req(nmf_obj())
         req(input$sel_K)
-        
+       print(input$inputannot_selcols) 
+       # if (length(input$inputannot_selcols) == 1 & 
+       #     !is.null(annot_react()) &
+       #     (input$inputannot_selcols %in% colnames(umap_df())) ) {
+       #   ggplot(umap_df(), aes(x=UMAP1, y=UMAP2, color = !! sym(input$inputannot_selcols))) +
+       #     geom_point(size = 1.5, alpha = 0.95) +
+       #     theme_cowplot()
+       # }
         if (length(input$inputannot_selcols) == 1 & 
-            !is.null(annot_react()) &
-            (input$inputannot_selcols %in% colnames(umap_df())) ) {
+            !is.null(annot_react()) ) {
           ggplot(umap_df(), aes(x=UMAP1, y=UMAP2, color = !! sym(input$inputannot_selcols))) +
             geom_point(size = 1.5, alpha = 0.95) +
             theme_cowplot()
@@ -395,6 +502,7 @@ recovplotsServer <- function(id, nmf_obj, annot_react) {
       output$plot_recoveryplots <- renderPlot({
         req(nmf_obj())
         req(input$sel_K)
+        req(input$sel_K %in% nmf_obj()@OptKStats$k)
         
         k <- input$sel_K
         hmat <- HMatrix(nmf_obj(), k = k)

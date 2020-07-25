@@ -10,7 +10,9 @@ dashboardPage(
   #                                Header                                      #
   #----------------------------------------------------------------------------#
   dashboardHeader(
-    title = "ShinyButchR",
+    #title = "ShinyButchR",
+    title = tags$a(href=".",
+                   "ShinyButchR"),
     # title = tags$a(href=".",
     #                tags$img(src="map_my_corona_logo.png",height="50px")),
     tags$li(class = "dropdown",
@@ -130,7 +132,7 @@ dashboardPage(
             status = "warning",
             background = "black",
             #tags$hr(),
-            h4("Upload a matrix in a csv or RDS file",
+            h4("Upload a matrix in a csv or RDS file, Maximun file size = 30Mb",
                align = "center"),
             # Input: Select a file ----
             fileInput("file1", "Choose a .csv or .RDS File",
