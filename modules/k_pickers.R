@@ -1,10 +1,41 @@
 #------------------------------------------------------------------------------#
 #                 Server Make K picker and Annot picker                        #
 #------------------------------------------------------------------------------#
+
+
 sel_KServer <- function(id, nmf_obj, annot_react, colsel_label, colsel_multi, newRun) {
   moduleServer(
     id,
     function(input, output, session) {
+      
+      observeEvent(input$sel_K, {
+        output$title_sel_K <- renderUI({
+          #nmf_obj()
+          
+          absolutePanel(h1(paste0("k=", input$sel_K)), 
+                     top = "280px",
+                     left = NULL,
+                     right = "50px",
+                     bottom = NULL,
+                     width = 10,
+                     height = 10,
+                     draggable = TRUE)
+          
+          # HTML(paste0("<p style='text-align:left'>",
+          #             "This text is left aligned",
+          #             "<span style='float:right;'>",
+          #             input$sel_K,
+          #             #"This text is right aligned",
+          #             "</span>
+          #             </p>"))
+
+
+          #tags$p(paste0("blablabla ", input$sel_K))
+
+
+        })
+      }, priority = 900)
+      
       # Select K
       observeEvent(nmf_obj(), {
         output$sel_K <- renderUI({
@@ -148,7 +179,23 @@ sel_KServer <- function(id, nmf_obj, annot_react, colsel_label, colsel_multi, ne
 sel_KUI <- function(id) {
   ns <- NS(id)
   box(
+    #title = uiOutput(ns("title_sel_K")),
     title = "H Matrix Heatmap", 
+    # title = tagList("H Matrix Heatmap",
+    #                 uiOutput(ns("title_sel_K"))), 
+    
+    # title = tagList(#"<p>H Matrix Heatmap</p>",
+    #                 tags$p("H Matrix Heatmap"),
+    #                 uiOutput(ns("title_sel_K"))),
+    
+    # <p style="text-align:left;">
+    #   This text is left aligned
+    # <span style="float:right;">
+    #   This text is right aligned
+    # </span>
+    #   </p>
+    
+    
     width = 3, 
     height = 350,
     solidHeader = TRUE, status = "primary",
@@ -207,343 +254,5 @@ sel_KrecovUI <- function(id, title) {
     uiOutput(ns("inputannot_selcols"))
   )
 }
-
-
-
-#------------------------------------------------------------------------------#
-#                               Heatmap Server & UI                            #
-#------------------------------------------------------------------------------#
-HHeatmapUI <- function(id) {
-  plotOutput(NS(id, "plot_hmatrixheat"))
-}
-
-HHeatmapServer <- function(id, nmf_obj, annot_react) {
-  moduleServer(id, function(input, output, session) {
-    
-    # Heatmap Annot
-    heat_anno <- reactiveVal(NULL)
-    observeEvent({
-      input$hmatheat_annot
-      input$inputannot_selcols
-      input$sel_K
-      nmf_obj()
-    }, {
-      #print("Heatmap Annot .....")
-      #print(paste("Annot cols: ", input$inputannot_selcols))
-      #req(nmf_obj_react())
-      req(nmf_obj())
-      req(input$sel_K)
-      req(input$sel_K %in% nmf_obj()@OptKStats$k)
-      
-      #req(input$inputannot_selcols)
-      k <- input$sel_K
-      
-      
-      hmat <- HMatrix(nmf_obj(), k = k)
-      
-      
-      if (input$hmatheat_annot & !is.null(annot_react()) & length(input$inputannot_selcols) > 0) {
-        # Build Heatmap annotation
-        annot <- annot_react()
-        annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
-        annot <- annot[, colnames(annot) %in% input$inputannot_selcols]
-        
-        hanno <- HeatmapAnnotation(df = annot,
-                                   #col = type.colVector,
-                                   show_annotation_name = FALSE, na_col = "white")
-      } else {
-        hanno <- NULL
-      }
-      heat_anno(hanno)
-    })
-    
-    # Heatmap
-    observeEvent({
-      nmf_obj()
-      heat_anno()
-      input$sel_K
-    }, {
-      #print("Heatmap .....")
-      req(nmf_obj())
-      output$plot_hmatrixheat <- renderPlot({
-        req(nmf_obj())
-        req(input$sel_K)
-        req(input$sel_K %in% nmf_obj()@OptKStats$k)
-        
-        
-        k <- input$sel_K
-        hmat <- HMatrix(nmf_obj(), k = k)
-        
-        Heatmap(hmat, 
-                col = viridis(100),
-                name = "Exposure",
-                cluster_columns             = input$hmatheat_cluster_cols,
-                clustering_distance_columns = "pearson",
-                show_column_dend            = TRUE, 
-                # heatmap_legend_param = 
-                #   list(color_bar = "continuous", legend_height=unit(2, "cm")),
-                top_annotation    = heat_anno(),
-                show_column_names = input$hmatheat_showcol,
-                cluster_rows      = input$hmatheat_cluster_rows,
-                show_row_names    = FALSE)
-      },
-      #width  = 100, 
-      height = 330
-      )
-    })
-  })
-}
-
-#------------------------------------------------------------------------------#
-#                        UMAP H matrix Server & UI                             #
-#------------------------------------------------------------------------------#
-humapUI <- function(id) {
-  plotOutput(NS(id, "plot_HUMAP"))
-}
-
-# humapServer <- function(id, nmf_obj, annot_react) {
-#   moduleServer(id, function(input, output, session) {
-#     
-#     
-#     # Heatmap Annot
-#     umap_df <- reactiveVal(NULL)
-#     observeEvent({
-#       nmf_obj()
-#       input$sel_K
-#     }, {
-#       req(nmf_obj())
-#       
-#       k <- input$sel_K
-#       hmat <- HMatrix(nmf_obj(), k = k)
-#       umapView <- umap(t(hmat))
-#       
-#       umapView_df <- as.data.frame(umapView$layout)
-#       colnames(umapView_df) <- c("UMAP1", "UMAP2")
-#       
-#       annot <- annot_react() %>% 
-#         mutate(sampleID = .[[1]])
-#         
-#       
-#       umapView_df <- umapView_df %>%
-#         rownames_to_column("sampleID") %>% 
-#         left_join(annot, by = "sampleID")
-#       
-#       
-#       
-#       
-#       #print(umapView_df)
-#       umap_df(umapView_df)
-#     })
-#     
-#     # specify the id 
-#     w <- Waiter$new(id = "plot_HUMAP")
-#     
-#     observeEvent({
-#       #nmf_obj()
-#       #input$sel_K
-#       umap_df()
-#       input$inputannot_selcols
-#     }, {
-#       #req(nmf_obj())
-#       
-#       hheat <- reactive({
-#         
-#         req(nmf_obj())
-#         req(input$sel_K)
-#         umap_df() %>%
-#           ggplot(aes(x=UMAP1, y=UMAP2, color = !! sym(input$inputannot_selcols))) + 
-#           geom_point(size = 1.5, alpha = 0.95) + 
-#           theme_cowplot()
-#       })
-#       
-#       
-#       output$plot_HUMAP <- renderPlot({
-#         
-#         # if (is.character(annot_char) | is.factor(annot_char)) {
-#         #   recovery_plot(hmat, annot_char)
-#         # } else {
-#         #   ggplot() + 
-#         #     annotate("text", x = 0, y = 0, 
-#         #              label = c("Please select a categorical variable")) +
-#         #     theme_void()
-#         # }
-#       }, height = 300
-#       )
-#       
-#       
-#       
-#       # output$plot_HUMAP <- renderPlot({
-#       #   req(nmf_obj())
-#       #   req(input$sel_K)
-#       #   umap_df() %>%
-#       #     ggplot(aes(x=UMAP1, y=UMAP2, color = !! sym(input$inputannot_selcols))) + 
-#       #     geom_point(size = 1.5, alpha = 0.95) + 
-#       #     theme_cowplot()
-#       #   # if (is.character(annot_char) | is.factor(annot_char)) {
-#       #   #   recovery_plot(hmat, annot_char)
-#       #   # } else {
-#       #   #   ggplot() + 
-#       #   #     annotate("text", x = 0, y = 0, 
-#       #   #              label = c("Please select a categorical variable")) +
-#       #   #     theme_void()
-#       #   # }
-#       # }, height = 300
-#       # )
-#     })
-#   })
-# }
-
-
-
-
-
-humapServer <- function(id, nmf_obj, annot_react) {
-  moduleServer(id, function(input, output, session) {
-    
-    
-    # specify the id 
-    # ns <- session$ns
-    # w <- Waiter$new(id = ns("plot_HUMAP"), ) # use the namespace
-    
-    # UAMP run and return dataframe
-    umap_df <- reactiveVal(NULL)
-    observeEvent({
-      nmf_obj()
-      annot_react()
-      input$sel_K
-    }, {
-      #w$show() # WAITER
-      #Sys.sleep(5)
-      
-      # Run UMAP
-      req(nmf_obj())
-      k <- input$sel_K
-      req(input$sel_K %in% nmf_obj()@OptKStats$k)
-      
-      hmat <- HMatrix(nmf_obj(), k = k)
-      umapView <- umap(t(hmat))
-      # Make df and bind annotation
-      umapView_df <- as.data.frame(umapView$layout)
-      colnames(umapView_df) <- c("UMAP1", "UMAP2")
-      if (!is.null(annot_react())) {
-        annot <- annot_react() %>% 
-          mutate(sampleID = .[[1]])
-        umapView_df <- umapView_df %>%
-          rownames_to_column("sampleID") %>% 
-          left_join(annot, by = "sampleID")
-      }
-      #print(umapView_df)
-      umap_df(umapView_df)
-    })
-    
-    
-    
-    observeEvent({
-      #nmf_obj()
-      #input$sel_K
-      umap_df()
-      #input$inputannot_selcols
-    }, {
-      #req(nmf_obj())
-      output$plot_HUMAP <- renderPlot({
-        req(nmf_obj())
-        req(input$sel_K)
-       print(input$inputannot_selcols) 
-       # if (length(input$inputannot_selcols) == 1 & 
-       #     !is.null(annot_react()) &
-       #     (input$inputannot_selcols %in% colnames(umap_df())) ) {
-       #   ggplot(umap_df(), aes(x=UMAP1, y=UMAP2, color = !! sym(input$inputannot_selcols))) +
-       #     geom_point(size = 1.5, alpha = 0.95) +
-       #     theme_cowplot()
-       # }
-        if (length(input$inputannot_selcols) == 1 & 
-            !is.null(annot_react()) ) {
-          ggplot(umap_df(), aes(x=UMAP1, y=UMAP2, color = !! sym(input$inputannot_selcols))) +
-            geom_point(size = 1.5, alpha = 0.95) +
-            theme_cowplot()
-        } else {
-          ggplot(umap_df(), aes(x=UMAP1, y=UMAP2)) +
-            geom_point(size = 1.5, alpha = 0.95) +
-            theme_cowplot()
-        }
-         
-          
-        # if (is.character(annot_char) | is.factor(annot_char)) {
-        #   recovery_plot(hmat, annot_char)
-        # } else {
-        #   ggplot() +
-        #     annotate("text", x = 0, y = 0,
-        #              label = c("Please select a categorical variable")) +
-        #     theme_void()
-        # }
-      }, height = 300
-      )
-    })
-  })
-}
-
-
-#------------------------------------------------------------------------------#
-#                        Recovery plots Server & UI                            #
-#------------------------------------------------------------------------------#
-recovplotsUI <- function(id) {
-  plotOutput(NS(id, "plot_recoveryplots"))
-}
-
-recovplotsServer <- function(id, nmf_obj, annot_react) {
-  moduleServer(id, function(input, output, session) {
-    
-    observeEvent({
-      nmf_obj()
-      input$sel_K
-      input$inputannot_selcols
-    }, {
-      #req(nmf_obj())
-      output$plot_recoveryplots <- renderPlot({
-        req(nmf_obj())
-        req(input$sel_K)
-        req(input$sel_K %in% nmf_obj()@OptKStats$k)
-        
-        k <- input$sel_K
-        hmat <- HMatrix(nmf_obj(), k = k)
-        annot <- annot_react()
-        # annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
-        # annot <- annot[, input$inputannot_selcols_recov]
-        
-        # make factor of selected annotation
-        if (!input$inputannot_selcols %in% colnames(annot)) {
-          annot_char <- FALSE
-        } else {
-          annot_char <- setNames(annot[, input$inputannot_selcols], 
-                                 annot[,1])
-        }
-        
-        
-        
-        if (is.character(annot_char) | is.factor(annot_char)) {
-          recovery_plot(hmat, annot_char)
-        } else {
-          ggplot() + 
-            annotate("text", x = 0, y = 0, 
-                     label = c("Please select a categorical variable")) +
-            theme_void()
-        }
-      },
-      height = 300
-      )
-    })
-  })
-}
-
-
-
-
-
-
-
-
-
-
-
 
 

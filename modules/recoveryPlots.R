@@ -1,3 +1,60 @@
+#------------------------------------------------------------------------------#
+#                        Recovery plots Server & UI                            #
+#------------------------------------------------------------------------------#
+recovplotsUI <- function(id) {
+  tagList(uiOutput(NS(id, "title_sel_K")),
+          plotOutput(NS(id, "plot_recoveryplots")))
+  #plotOutput(NS(id, "plot_recoveryplots"))
+}
+
+recovplotsServer <- function(id, nmf_obj, annot_react) {
+  moduleServer(id, function(input, output, session) {
+    
+    observeEvent({
+      nmf_obj()
+      input$sel_K
+      input$inputannot_selcols
+    }, {
+      #req(nmf_obj())
+      output$plot_recoveryplots <- renderPlot({
+        req(nmf_obj())
+        req(input$sel_K)
+        req(input$sel_K %in% nmf_obj()@OptKStats$k)
+        
+        k <- input$sel_K
+        hmat <- HMatrix(nmf_obj(), k = k)
+        annot <- annot_react()
+        # annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]
+        # annot <- annot[, input$inputannot_selcols_recov]
+        
+        # make factor of selected annotation
+        if (!input$inputannot_selcols %in% colnames(annot)) {
+          annot_char <- FALSE
+        } else {
+          annot_char <- setNames(annot[, input$inputannot_selcols], 
+                                 annot[,1])
+        }
+        
+        
+        
+        if (is.character(annot_char) | is.factor(annot_char)) {
+          recovery_plot(hmat, annot_char)
+        } else {
+          ggplot() + 
+            annotate("text", x = 0, y = 0, 
+                     label = c("Please select a categorical variable")) +
+            theme_void()
+        }
+      },
+      height = 300
+      )
+    })
+  })
+}
+
+
+
+
 ##----------------------------------------------------------------------------##
 ##                         Recovery plots function                            ##
 ##----------------------------------------------------------------------------##

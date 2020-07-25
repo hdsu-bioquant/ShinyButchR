@@ -3,6 +3,8 @@
 #------------------------------------------------------------------------------#
 source("modules/recoveryPlots.R")
 source("modules/k_pickers.R")
+source("modules/HHeatmap.R")
+source("modules/UMAP.R")
 source("modules/FAQ.R")
 
 #------------------------------------------------------------------------------#
