@@ -511,8 +511,7 @@ function(input, output, session) {
     # This function returns a string which tells the client
     # browser what name to use when saving the file.
     filename = function() {
-      #"NMF_object.RDS"
-      "folder.zip"
+      "NMF_object.RDS"
     },
     
     # This function should write data to a file given to it by
@@ -521,14 +520,7 @@ function(input, output, session) {
       # sep <- switch(input$filetype, "csv" = ",", "tsv" = "\t")
       
       # Write to a file specified by the 'file' argument
-      #saveRDS(nmf_obj_react(), file)
-      zip(zipfile = "folder", files = "/home/shiny/.virtualenvs/pytensor_env/")
-      file.copy("folder.zip", file)
-      # copyDirectory(
-      #   from = "/Users/andresq/phd/projects/dev_ButchR/ShinyButchR/data/", 
-      #   #from = "/home/shiny/.virtualenvs/pytensor_env/", 
-      #   to= file)
-      
+      saveRDS(nmf_obj_react(), file)
       
     }
   )

@@ -412,8 +412,8 @@ dashboardPage(
             h3("This object is compatible with the latest 
                version of ButchR", align = "center"),
             h3("To install in R use:", align = "center"),
-            h5("devtools::install_github('hdsu-bioquant/bratwurst', 
-               ref='dev_hdsu_lite')", align = "center")
+            h5("remotes::install_github('wurst-theke/ButchR')", 
+               align = "center")
             
             
             
