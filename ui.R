@@ -36,7 +36,7 @@ dashboardPage(
       h6("ShinyButchR is an app to run ", align = "center"),
       h6("Non-Negative Matrix Factorization (NMF) ", align = "center"),
       h6("on a small input matrix", align = "center"),
-      h6("Using the Bratwurst package", align = "center"),
+      h6("Using the ButchR package", align = "center"),
       tags$hr(),
       
       
@@ -56,6 +56,12 @@ dashboardPage(
       menuItem(
         "NMF plots",
         tabName = "nmfplots",
+        icon = icon("bar-chart")
+      ),
+      
+      menuItem(
+        "Feature extraction",
+        tabName = "nmffeatures",
         icon = icon("bar-chart")
       ),
       

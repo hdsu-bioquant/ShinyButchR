@@ -8,7 +8,10 @@ sel_KServer <- function(id, nmf_obj, annot_react, colsel_label, colsel_multi, ne
     id,
     function(input, output, session) {
       
+      #outputOptions(output, NS(id)("sel_k"), priority = 1000)
+      
       observeEvent(input$sel_K, {
+        
         output$title_sel_K <- renderUI({
           #nmf_obj()
           
@@ -20,74 +23,57 @@ sel_KServer <- function(id, nmf_obj, annot_react, colsel_label, colsel_multi, ne
                      width = 10,
                      height = 10,
                      draggable = TRUE)
-          
-          # HTML(paste0("<p style='text-align:left'>",
-          #             "This text is left aligned",
-          #             "<span style='float:right;'>",
-          #             input$sel_K,
-          #             #"This text is right aligned",
-          #             "</span>
-          #             </p>"))
-
-
-          #tags$p(paste0("blablabla ", input$sel_K))
-
-
         })
       }, priority = 900)
       
       # Select K
-      observeEvent(nmf_obj(), {
-        output$sel_K <- renderUI({
-          #nmf_obj()
-          req(nmf_obj())
-          
-          
-          ns <- NS(id)
-          ks <- nmf_obj()@OptKStats$k
-          optk <- nmf_obj()@OptK
-          selectInput(
-            inputId = ns("sel_K"),
-            #label = "Select factorization rank:",
-            label = "Select K:",
-            choices = ks,
-            selected = ifelse(length(optk) == 0,
-                              ks[1], max(optk)),
-            multiple = FALSE
-          )
-          
-          # if (is.null(nmf_obj())) {
-          #   
-          #   selectInput(
-          #     inputId = ns("sel_K"),
-          #     #label = "Select factorization rank:",
-          #     label = "Select K:",
-          #     choices = NA,
-          #     selected = NA,
-          #     multiple = FALSE
-          #   )
-          #   
-          # } else {
-          #   ks <- nmf_obj()@OptKStats$k
-          #   optk <- nmf_obj()@OptK
-          #   
-          #   selectInput(
-          #     inputId = ns("sel_K"),
-          #     #label = "Select factorization rank:",
-          #     label = "Select K:",
-          #     choices = ks,
-          #     selected = ifelse(length(optk) == 0,
-          #                       ks[1], max(optk)),
-          #     multiple = FALSE
-          #   )
-          # }
-          
-          
-          
-        })
-      }, priority = 1000)
-      
-      
+      # observeEvent(nmf_obj(), {
+      #   
+      # }, priority = 1000)
+      output$sel_K <- renderUI({
+        #nmf_obj()
+        req(nmf_obj())
+        
+        
+        ns <- NS(id)
+        ks <- nmf_obj()@OptKStats$k
+        optk <- nmf_obj()@OptK
+        selectInput(
+          inputId = ns("sel_K"),
+          #label = "Select factorization rank:",
+          label = "Select K:",
+          choices = ks,
+          selected = ifelse(length(optk) == 0,
+                            ks[1], max(optk)),
+          multiple = FALSE
+        )
+        # if (is.null(nmf_obj())) {
+        #   
+        #   selectInput(
+        #     inputId = ns("sel_K"),
+        #     #label = "Select factorization rank:",
+        #     label = "Select K:",
+        #     choices = NA,
+        #     selected = NA,
+        #     multiple = FALSE
+        #   )
+        #   
+        # } else {
+        #   ks <- nmf_obj()@OptKStats$k
+        #   optk <- nmf_obj()@OptK
+        #   
+        #   selectInput(
+        #     inputId = ns("sel_K"),
+        #     #label = "Select factorization rank:",
+        #     label = "Select K:",
+        #     choices = ks,
+        #     selected = ifelse(length(optk) == 0,
+        #                       ks[1], max(optk)),
+        #     multiple = FALSE
+        #   )
+        # }
+      })
+      #outputOptions(session$output, "sel_K", priority = 1000, suspendWhenHidden = FALSE)
       
       # Selector columns to use
       output$inputannot_selcols <- renderUI({
