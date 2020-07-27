@@ -154,7 +154,7 @@ humapServer <- function(id, nmf_obj, annot_react) {
       output$plot_HUMAP <- renderPlot({
         req(nmf_obj())
         req(input$sel_K)
-        print(input$inputannot_selcols) 
+        #print(input$inputannot_selcols) 
         # if (length(input$inputannot_selcols) == 1 & 
         #     !is.null(annot_react()) &
         #     (input$inputannot_selcols %in% colnames(umap_df())) ) {
