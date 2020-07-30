@@ -59,11 +59,11 @@ dashboardPage(
         icon = icon("bar-chart")
       ),
       
-      menuItem(
-        "Feature extraction",
-        tabName = "nmffeatures",
-        icon = icon("bar-chart")
-      ),
+      # menuItem(
+      #   "Feature extraction",
+      #   tabName = "nmffeatures",
+      #   icon = icon("bar-chart")
+      # ),
       
       menuItem(
         "Save results",
