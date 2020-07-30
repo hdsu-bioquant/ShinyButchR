@@ -142,7 +142,7 @@ function(input, output, session) {
     updateNumericInput(session, "params_kmin", value = 2)
     updateNumericInput(session, "params_kmax", value = 10)
     updateNumericInput(session, "params_ninits", value = 2)
-    updateNumericInput(session, "params_convthrs", value = 3)
+    updateNumericInput(session, "params_convthrs", value = 30)
     
   })
   

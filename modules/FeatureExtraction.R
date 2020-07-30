@@ -84,10 +84,28 @@ feature_extractionUI <- function(id) {
       box(
         title = "Download Signature Specific Features table", 
         width = 12, 
-        height = 50,
+        height = 100,
         solidHeader = TRUE, status = "primary",
-        downloadButton('downloadTop_features', 'Download')
-        
+        column(
+          width = 3, 
+          h5("Select format", style="text-align: center;")
+        ),
+        column(
+          width = 3, 
+          radioGroupButtons(
+            inputId = NS(id, "download_Fileformat"),
+            #label = "Select format", 
+            label = NULL, 
+            choices = c(".RDS", ".csv"),
+            selected = ".RDS",
+            justified = FALSE,
+            checkIcon = list(
+              yes = icon("ok", 
+                         lib = "glyphicon"))
+          )    
+        ),
+        column(width = 6, 
+               downloadButton(NS(id, "downloadTop_features"), 'Download'))
         )
     )
   )
@@ -143,7 +161,7 @@ top_featuresServer <- function(id, nmf_obj) {
       })
       
       wmatrix <- wmatrix[unique(do.call(c, nmf_feat)),,drop=FALSE]
-      
+      wmatrix <- wmatrix/rowMaxs(wmatrix)
       
       nmf_features(list(wmatrix  = wmatrix, 
                         features = nmf_feat))
@@ -220,10 +238,12 @@ top_featuresServer <- function(id, nmf_obj) {
     
     
     output$downloadTop_features <- downloadHandler(
+      
       # This function returns a string which tells the client
       # browser what name to use when saving the file.
       filename = function() {
-        "downloadTop_features.RDS"
+        paste0("Top_features_table_k", input$sel_K,
+               input$download_Fileformat)
       },
       
       # This function should write data to a file given to it by
@@ -235,17 +255,21 @@ top_featuresServer <- function(id, nmf_obj) {
         nmf_features_table <- do.call(cbind, lapply(nmf_features()$features, function(sigfeatIDS){
           nmf_featuresIDs %in% sigfeatIDS
         }))
-        
-        
-        
-        # sep <- switch(input$filetype, "csv" = ",", "tsv" = "\t")
+        rownames(nmf_features_table) <- nmf_featuresIDs
         
         # Write to a file specified by the 'file' argument
-        saveRDS(nmf_features_table, file)
+        if (input$download_Fileformat == ".RDS") {
+          saveRDS(nmf_features_table, file)
+        } else {
+          write.csv(x = nmf_features_table, file = file, 
+                    row.names = TRUE, quote = FALSE)
+        }
         
         
       }
     )
+    
+    
     
     
     
