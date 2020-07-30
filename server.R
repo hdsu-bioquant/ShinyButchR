@@ -560,7 +560,7 @@ function(input, output, session) {
     content = function(file) {
       # sep <- switch(input$filetype, "csv" = ",", "tsv" = "\t")
       
-      k <- input$download_sel_K
+      k <- as.numeric(input$download_sel_K)
       if (input$download_matrixwhich == "H") {
         downmat <- HMatrix(nmf_obj_react(), k = k)
         rownames(downmat) <- paste0("signature",  1:k)
