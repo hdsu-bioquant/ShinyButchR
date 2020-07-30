@@ -123,7 +123,7 @@ humapServer <- function(id, nmf_obj, annot_react) {
       
       # Run UMAP
       req(nmf_obj())
-      k <- input$sel_K
+      k <- as.numeric(input$sel_K)
       req(input$sel_K %in% nmf_obj()@OptKStats$k)
       
       hmat <- HMatrix(nmf_obj(), k = k)

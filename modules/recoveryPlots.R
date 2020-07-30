@@ -21,7 +21,7 @@ recovplotsServer <- function(id, nmf_obj, annot_react) {
         req(input$sel_K)
         req(input$sel_K %in% nmf_obj()@OptKStats$k)
         
-        k <- input$sel_K
+        k <- as.numeric(input$sel_K)
         hmat <- HMatrix(nmf_obj(), k = k)
         annot <- annot_react()
         # annot <- annot[match(colnames(hmat), annot[,1]), -1, drop=FALSE]

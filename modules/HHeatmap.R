@@ -29,7 +29,8 @@ HHeatmapServer <- function(id, nmf_obj, annot_react) {
       req(input$sel_K %in% nmf_obj()@OptKStats$k)
       
       #req(input$inputannot_selcols)
-      k <- input$sel_K
+      k <- as.numeric(input$sel_K)
+      #print(paste(class(k), k))
       
       
       hmat <- HMatrix(nmf_obj(), k = k)
@@ -64,7 +65,7 @@ HHeatmapServer <- function(id, nmf_obj, annot_react) {
         req(input$sel_K %in% nmf_obj()@OptKStats$k)
         
         
-        k <- input$sel_K
+        k <- as.numeric(input$sel_K)
         hmat <- HMatrix(nmf_obj(), k = k)
         
         Heatmap(hmat, 

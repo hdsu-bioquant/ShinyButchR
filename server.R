@@ -142,7 +142,7 @@ function(input, output, session) {
     updateNumericInput(session, "params_kmin", value = 2)
     updateNumericInput(session, "params_kmax", value = 10)
     updateNumericInput(session, "params_ninits", value = 2)
-    updateNumericInput(session, "params_convthrs", value = 30)
+    updateNumericInput(session, "params_convthrs", value = 3)
     
   })
   
@@ -353,12 +353,12 @@ function(input, output, session) {
     # )
     
     
-    nmf_exp <- runNMFtensor_lite(inputMatrix_react(),
-                                 ranks  = input$params_kmin:input$params_kmax,
-                                 method = input$params_method,
-                                 n_initializations     = input$params_ninits,
-                                 iterations            = 10^4,
-                                 convergence_threshold = input$params_convthrs)
+    nmf_exp <- run_NMF_tensor(inputMatrix_react(),
+                              ranks  = input$params_kmin:input$params_kmax,
+                              method = input$params_method,
+                              n_initializations     = input$params_ninits,
+                              iterations            = 10^4,
+                              convergence_threshold = input$params_convthrs)
     nmf_exp <- normalizeW(nmf_exp)
     
     
@@ -402,17 +402,17 @@ function(input, output, session) {
   ##                              NMF H matrix UMAP                           ##
   ##--------------------------------------------------------------------------##
   # K selector module
-  sel_KServer("HUMAP", nmf_obj_react, annot_react, 
+  sel_KServer("HUMAP", nmf_obj_react, annot_react,
               colsel_label = "Select a column to color the UMAP", colsel_multi = FALSE, reactive(input$startNMF))
   # UMAP module
   humapServer("HUMAP", nmf_obj_react, annot_react)
-  
+
   ##--------------------------------------------------------------------------##
   ##                             NMF Recovery plots                           ##
   ##--------------------------------------------------------------------------##
   # K selector
-  sel_KServer("recov", nmf_obj_react, annot_react, 
-              colsel_label = "Select a column with a categorical annotation to estimate the recovery plots", 
+  sel_KServer("recov", nmf_obj_react, annot_react,
+              colsel_label = "Select a column with a categorical annotation to estimate the recovery plots",
               colsel_multi = FALSE, reactive(input$startNMF))
   # Recovery plots
   recovplotsServer("recov", nmf_obj_react, annot_react)
