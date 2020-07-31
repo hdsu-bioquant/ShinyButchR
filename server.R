@@ -496,16 +496,16 @@ function(input, output, session) {
   height = 300
   )
   
-  ##--------------------------------------------------------------------------##
-  ##                          Feature extraction                              ##
-  ##--------------------------------------------------------------------------##
-  # K selector
-  sel_KServer("featextraction", nmf_obj_react, annot_react,
-              colsel_label = NULL,
-              colsel_multi = FALSE, reactive(input$startNMF))
-  # Recovery plots
-  #feature_extractionServer("featextraction", nmf_obj_react)
-  top_featuresServer("featextraction", nmf_obj_react)
+  # ##--------------------------------------------------------------------------##
+  # ##                          Feature extraction                              ##
+  # ##--------------------------------------------------------------------------##
+  # # K selector
+  # sel_KServer("featextraction", nmf_obj_react, annot_react,
+  #             colsel_label = NULL,
+  #             colsel_multi = FALSE, reactive(input$startNMF))
+  # # Recovery plots
+  # #feature_extractionServer("featextraction", nmf_obj_react)
+  # top_featuresServer("featextraction", nmf_obj_react)
   
   
   ##--------------------------------------------------------------------------##
