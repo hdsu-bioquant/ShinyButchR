@@ -374,7 +374,7 @@ dashboardPage(
             
             sliderTextInput(
               inputId = "sel_edges_cutoff",
-              label = "cutoff until which similarities are displayed:", 
+              label = "cutoff of displayed similarities:", 
               choices = seq(0, 1, by = 0.1),
               selected = 0.2,
               grid = TRUE
