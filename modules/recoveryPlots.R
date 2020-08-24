@@ -185,7 +185,7 @@ recovery_plot <- function(h, annot){
     # geom_step(data = function(x){x %>% filter(issignif)}, size  = 1.5) +
     geom_step() +
     
-    geom_abline(intercept = 0, slope = 1/45) +
+    geom_abline(intercept = 0, slope = 1/n_samples) +
     #facet_wrap(Annotation ~ Annotation_level) +
     facet_wrap(.~Annotation_level) +
     # chance line style
