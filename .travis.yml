@@ -85,7 +85,7 @@ before_script:
   - touch .localtf # use local tf
   - rm .Rprofile
   - R -e 'packrat::packify()'
-  - R -e 'install.packages("covr")'
+  # - R -e 'install.packages("covr")'
   # - R -e 'reticulate::py_discover_config()'
   # - R -e 'reticulate::py_config()'
 
@@ -93,8 +93,8 @@ script:
   - R -f run_tests.R
 
 
-after_success:
-  - Rscript -e 'covr::codecov(quiet=FALSE)'
+# after_success:
+#   - Rscript -e 'covr::codecov(quiet=FALSE)'
 
 notifications:
   email:
