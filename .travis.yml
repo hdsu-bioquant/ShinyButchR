@@ -84,6 +84,7 @@ before_install:
 before_script:
   - touch .localtf # use local tf
   - rm .Rprofile
+  - R -e 'packrat::packify()'
   # - R -e 'reticulate::py_discover_config()'
   # - R -e 'reticulate::py_config()'
 
