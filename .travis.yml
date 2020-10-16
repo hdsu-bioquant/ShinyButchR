@@ -85,17 +85,16 @@ before_script:
   - touch .localtf # use local tf
   - rm .Rprofile
   - R -e 'packrat::packify()'
+  - R -e 'install.packages("covr")'
   # - R -e 'reticulate::py_discover_config()'
   # - R -e 'reticulate::py_config()'
-
-
-# only report coverage for the release version
-# after_success:
-#   - test $TRAVIS_R_VERSION_STRING = 'release' && Rscript -e 'covr::codecov()'
 
 script:
   - R -f run_tests.R
 
+
+after_success:
+  - Rscript -e 'covr::codecov(quiet=FALSE)'
 
 notifications:
   email:
