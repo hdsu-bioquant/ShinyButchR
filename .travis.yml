@@ -2,11 +2,17 @@
 
 language: R
 warnings_are_errors: false
-sudo: required
+sudo: false
 dist: xenial
 cache:
+  # Main R library
   packages: true
   directories:
+    # Packrat packages
+    - packrat/lib
+    # PhantomJS
+    - travis_phantomjs
+    # pip
     - $HOME/.cache/pip
 
 r: 4.0.2
