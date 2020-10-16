@@ -1,0 +1,91 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
+language: R
+warnings_are_errors: false
+sudo: required
+dist: xenial
+cache:
+  packages: true
+  directories:
+    - $HOME/.cache/pip
+
+r: 4.0.2
+
+# Install packrat if needed and have it restore packages.
+install:
+  - R -e 'if (system.file(package="packrat") == "") install.packages("packrat")'
+  - R -e "packrat::packify(); packrat::restore()"
+
+cache:
+  # Main R library
+  packages: true
+  directories:
+    # Packrat packages
+    - packrat/lib
+    # PhantomJS
+    - travis_phantomjs
+
+env:
+ global:
+   - CRAN: http://cran.rstudio.com
+   - RETICULATE_PYTHON=/usr/bin/python3.7
+
+# r_packages:
+#    - reticulate
+#    - tensorflow
+#    - covr
+#    #- testthat
+
+
+
+addons:
+  apt:
+    sources:
+    - deadsnakes
+    packages:
+    - python3.7
+    - python3-pip
+    - python3-dev
+    - python3-venv
+    - python3-setuptools
+    - git
+    - libpython3.7-dev
+
+# Install tensorflow
+# Install PhantomJS (if not cached)
+before_install:
+  - ls /usr/bin/python*
+  - python --version
+  - python3.7 -m pip install pip
+  - python3.7 -m pip install setuptools
+  - python3.7 -m pip install numpy tensorflow-cpu==2.2.0
+  - "export PHANTOMJS_VERSION=2.1.1"
+  - "phantomjs --version"
+  - "export PATH=$PWD/travis_phantomjs/phantomjs-$PHANTOMJS_VERSION-linux-x86_64/bin:$PATH"
+  - "hash -r"
+  - "phantomjs --version"
+  - "if [ $(phantomjs --version) != $PHANTOMJS_VERSION ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi"
+  - "if [ $(phantomjs --version) != $PHANTOMJS_VERSION ]; then wget https://github.com/Medium/phantomjs/releases/download/v$PHANTOMJS_VERSION/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 -O $PWD/travis_phantomjs/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2; fi"
+  - "if [ $(phantomjs --version) != $PHANTOMJS_VERSION ]; then tar -xvf $PWD/travis_phantomjs/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 -C $PWD/travis_phantomjs; fi"
+  - "if [ $(phantomjs --version) != $PHANTOMJS_VERSION ]; then hash -r; fi"
+  - "phantomjs --version"
+
+before_script:
+  - R -e 'reticulate::py_discover_config()'
+  - R -e 'reticulate::py_config()'
+  #- R -e 'tensorflow::install_tensorflow(version = "2.2.0-cpu")'
+  #- R -e 'tensorflow::tf_config()'
+
+
+# only report coverage for the release version
+# after_success:
+#   - test $TRAVIS_R_VERSION_STRING = 'release' && Rscript -e 'covr::codecov()'
+
+script:
+  - R -f run_tests.R
+
+
+
+notifications:
+  email:
+    on_failure: change
