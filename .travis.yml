@@ -71,6 +71,8 @@ before_install:
   - "phantomjs --version"
 
 before_script:
+  - touch .localtf # use local tf
+  - rm .Rprofile
   - R -e 'reticulate::py_discover_config()'
   - R -e 'reticulate::py_config()'
   #- R -e 'tensorflow::install_tensorflow(version = "2.2.0-cpu")'
