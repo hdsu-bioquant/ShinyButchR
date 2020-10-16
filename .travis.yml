@@ -73,10 +73,8 @@ before_install:
 before_script:
   - touch .localtf # use local tf
   - rm .Rprofile
-  - R -e 'reticulate::py_discover_config()'
-  - R -e 'reticulate::py_config()'
-  #- R -e 'tensorflow::install_tensorflow(version = "2.2.0-cpu")'
-  #- R -e 'tensorflow::tf_config()'
+  # - R -e 'reticulate::py_discover_config()'
+  # - R -e 'reticulate::py_config()'
 
 
 # only report coverage for the release version
