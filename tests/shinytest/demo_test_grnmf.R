@@ -1,0 +1,10 @@
+app <- ShinyDriver$new("../../")
+app$snapshotInit("demo_test_grnmf")
+
+app$setInputs(load_demo = "click")
+app$setInputs(params_kmax = 6)
+app$setInputs(params_method = "GRNMF_SC")
+app$setInputs(params_ninits = 1)
+app$setInputs(params_convthrs = 10)
+app$setInputs(startNMF = "click")
+app$snapshot()
