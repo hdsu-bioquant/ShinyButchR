@@ -1,6 +1,5 @@
 app <- ShinyDriver$new("../../")
-app$snapshotInit("mytest")
+app$snapshotInit("load_demo")
 
 app$setInputs(load_demo = "click")
 app$snapshot()
-app$setInputs(startNMF = "click")

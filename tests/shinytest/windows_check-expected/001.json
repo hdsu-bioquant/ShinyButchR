@@ -1,0 +1,132 @@
+{
+  "input": {
+    "clear_inputMatrix": 0,
+    "download_matrixformat": ".RDS",
+    "download_matrixwhich": "H",
+    "featextraction-download_Fileformat": ".RDS",
+    "featextraction-topnFeatures": 1,
+    "featextraction-wmatheat_cluster_cols": true,
+    "featextraction-wmatheat_cluster_rows": true,
+    "featextraction-wmatheat_showcol": true,
+    "file_annot": null,
+    "file1": null,
+    "HHeat-hmatheat_annot": true,
+    "HHeat-hmatheat_cluster_cols": true,
+    "HHeat-hmatheat_cluster_rows": true,
+    "HHeat-hmatheat_showcol": true,
+    "load_demo": 0,
+    "mainmenu": "faq",
+    "params_convthrs": 40,
+    "params_kmax": 3,
+    "params_kmin": 2,
+    "params_method": "NMF",
+    "params_ninits": 2,
+    "sel_edges_cutoff": 0.2,
+    "sidebarCollapsed": false,
+    "sidebarItemExpanded": null,
+    "startNMF": 0
+  },
+  "output": {
+    "download_sel_K": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "HHeat-inputannot_selcols": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "HHeat-sel_K": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "HUMAP-inputannot_selcols": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "HUMAP-sel_K": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "inputannot_printdim": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "inputannot_printout": null,
+    "inputmatrix_printdim": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "inputmatrix_printout": null,
+    "plot_nmfoptk": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "print_optK": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "recov-inputannot_selcols": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "recov-sel_K": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "sel_riverRange": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    }
+  },
+  "export": {
+
+  }
+}
