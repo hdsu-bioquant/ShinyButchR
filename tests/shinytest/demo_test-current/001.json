@@ -16,11 +16,11 @@
     "HHeat-hmatheat_showcol": true,
     "load_demo": 1,
     "mainmenu": "nmfplots",
-    "params_convthrs": 10,
+    "params_convthrs": 5,
     "params_kmax": 6,
     "params_kmin": 2,
-    "params_method": "GRNMF_SC",
-    "params_ninits": 1,
+    "params_method": "NMF",
+    "params_ninits": 2,
     "sel_edges_cutoff": 0.2,
     "sidebarCollapsed": false,
     "sidebarItemExpanded": null,
@@ -132,7 +132,7 @@
     "inputmatrix_printdim": "Uploaded matrix with 21811 rows, and 45 columns",
     "inputmatrix_printout": "<table  class = 'table shiny-table table- spacing-xs' style = 'width:auto;'>\n<thead> <tr> <th style='text-align: left;'>  <\/th> <th style='text-align: right;'> X5852.HSC <\/th> <th style='text-align: right;'> X6792.HSC <\/th> <th style='text-align: right;'> X7256.HSC <\/th> <th style='text-align: right;'> X7653.HSC <\/th> <th style='text-align: right;'> X5852.MPP <\/th>  <\/tr> <\/thead> <tbody>\n  <tr> <td> A1BG <\/td> <td align=\"right\"> 3.41 <\/td> <td align=\"right\"> 3.06 <\/td> <td align=\"right\"> 1.20 <\/td> <td align=\"right\"> 3.03 <\/td> <td align=\"right\"> 3.27 <\/td> <\/tr>\n  <tr> <td> A1BG-AS1 <\/td> <td align=\"right\"> 1.62 <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 1.20 <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 4.24 <\/td> <\/tr>\n  <tr> <td> A1CF <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 0.00 <\/td> <\/tr>\n  <tr> <td> A2M <\/td> <td align=\"right\"> 5.78 <\/td> <td align=\"right\"> 7.30 <\/td> <td align=\"right\"> 5.57 <\/td> <td align=\"right\"> 6.89 <\/td> <td align=\"right\"> 5.49 <\/td> <\/tr>\n  <tr> <td> A2M-AS1 <\/td> <td align=\"right\"> 5.64 <\/td> <td align=\"right\"> 5.98 <\/td> <td align=\"right\"> 6.09 <\/td> <td align=\"right\"> 6.96 <\/td> <td align=\"right\"> 5.07 <\/td> <\/tr>\n   <\/tbody> <\/table>",
     "plot_nmfoptk": {
-      "src": "[image data sha1: 4946bdcb10837f7c5d4ff2d8983a1ca6437c9319]",
+      "src": "[image data sha1: 2bdf6ada6c924c46fdc173b91871f96129a4204a]",
       "width": 522,
       "height": 300,
       "coordmap": {
@@ -151,8 +151,8 @@
             "domain": {
               "left": 1.8,
               "right": 6.2,
-              "bottom": 31417579.2,
-              "top": 31441092.8
+              "bottom": 0.165478133410215,
+              "top": 0.256167612224817
             },
             "mapping": {
               "xintercept": "xintercept",
@@ -161,8 +161,8 @@
               "panelvar1": "Metric"
             },
             "range": {
-              "left": 62.4927755381963,
-              "right": 210.182398304003,
+              "left": 40.4669939067266,
+              "right": 179.16126314799,
               "bottom": 127.713249636042,
               "top": 22.3977473941376
             }
@@ -181,8 +181,8 @@
             "domain": {
               "left": 1.8,
               "right": 6.2,
-              "bottom": null,
-              "top": null
+              "bottom": -0.00600816800076747,
+              "top": 0.179461818444919
             },
             "mapping": {
               "xintercept": "xintercept",
@@ -191,8 +191,8 @@
               "panelvar1": "Metric"
             },
             "range": {
-              "left": 215.661850358798,
-              "right": 363.351473124604,
+              "left": 206.699566183569,
+              "right": 345.393835424833,
               "bottom": 127.713249636042,
               "top": 22.3977473941376
             }
@@ -211,8 +211,8 @@
             "domain": {
               "left": 1.8,
               "right": 6.2,
-              "bottom": null,
-              "top": null
+              "bottom": -0.680826819651581,
+              "top": 3.70452763588213
             },
             "mapping": {
               "xintercept": "xintercept",
@@ -221,8 +221,8 @@
               "panelvar1": "Metric"
             },
             "range": {
-              "left": 368.830925179399,
-              "right": 516.520547945206,
+              "left": 377.826278703942,
+              "right": 516.520547945205,
               "bottom": 127.713249636042,
               "top": 22.3977473941376
             }
@@ -241,8 +241,8 @@
             "domain": {
               "left": 1.8,
               "right": 6.2,
-              "bottom": null,
-              "top": null
+              "bottom": -0.143917754844529,
+              "top": 0.37406395753485
             },
             "mapping": {
               "xintercept": "xintercept",
@@ -251,8 +251,8 @@
               "panelvar1": "Metric"
             },
             "range": {
-              "left": 62.4927755381963,
-              "right": 210.182398304003,
+              "left": 40.4669939067266,
+              "right": 179.16126314799,
               "bottom": 268.509178173071,
               "top": 163.193675931167
             }
@@ -271,8 +271,8 @@
             "domain": {
               "left": 1.8,
               "right": 6.2,
-              "bottom": null,
-              "top": null
+              "bottom": 0.415038987461117,
+              "top": 0.842454096415598
             },
             "mapping": {
               "xintercept": "xintercept",
@@ -281,8 +281,8 @@
               "panelvar1": "Metric"
             },
             "range": {
-              "left": 215.661850358798,
-              "right": 363.351473124604,
+              "left": 206.699566183569,
+              "right": 345.393835424833,
               "bottom": 268.509178173071,
               "top": 163.193675931167
             }
@@ -301,8 +301,8 @@
             "domain": {
               "left": 1.8,
               "right": 6.2,
-              "bottom": null,
-              "top": null
+              "bottom": 0.128874693717322,
+              "top": 0.233408378082696
             },
             "mapping": {
               "xintercept": "xintercept",
@@ -311,8 +311,8 @@
               "panelvar1": "Metric"
             },
             "range": {
-              "left": 368.830925179399,
-              "right": 516.520547945206,
+              "left": 377.826278703942,
+              "right": 516.520547945205,
               "bottom": 268.509178173071,
               "top": 163.193675931167
             }

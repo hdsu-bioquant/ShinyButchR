@@ -132,7 +132,7 @@
     "inputmatrix_printdim": "Uploaded matrix with 21811 rows, and 45 columns",
     "inputmatrix_printout": "<table  class = 'table shiny-table table- spacing-xs' style = 'width:auto;'>\n<thead> <tr> <th style='text-align: left;'>  <\/th> <th style='text-align: right;'> X5852.HSC <\/th> <th style='text-align: right;'> X6792.HSC <\/th> <th style='text-align: right;'> X7256.HSC <\/th> <th style='text-align: right;'> X7653.HSC <\/th> <th style='text-align: right;'> X5852.MPP <\/th>  <\/tr> <\/thead> <tbody>\n  <tr> <td> A1BG <\/td> <td align=\"right\"> 3.41 <\/td> <td align=\"right\"> 3.06 <\/td> <td align=\"right\"> 1.20 <\/td> <td align=\"right\"> 3.03 <\/td> <td align=\"right\"> 3.27 <\/td> <\/tr>\n  <tr> <td> A1BG-AS1 <\/td> <td align=\"right\"> 1.62 <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 1.20 <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 4.24 <\/td> <\/tr>\n  <tr> <td> A1CF <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 0.00 <\/td> <td align=\"right\"> 0.00 <\/td> <\/tr>\n  <tr> <td> A2M <\/td> <td align=\"right\"> 5.78 <\/td> <td align=\"right\"> 7.30 <\/td> <td align=\"right\"> 5.57 <\/td> <td align=\"right\"> 6.89 <\/td> <td align=\"right\"> 5.49 <\/td> <\/tr>\n  <tr> <td> A2M-AS1 <\/td> <td align=\"right\"> 5.64 <\/td> <td align=\"right\"> 5.98 <\/td> <td align=\"right\"> 6.09 <\/td> <td align=\"right\"> 6.96 <\/td> <td align=\"right\"> 5.07 <\/td> <\/tr>\n   <\/tbody> <\/table>",
     "plot_nmfoptk": {
-      "src": "[image data sha1: 4946bdcb10837f7c5d4ff2d8983a1ca6437c9319]",
+      "src": "[image data sha1: 1797a626c53612b38ba1106e315332905ee92194]",
       "width": 522,
       "height": 300,
       "coordmap": {
@@ -151,8 +151,8 @@
             "domain": {
               "left": 1.8,
               "right": 6.2,
-              "bottom": 31417579.2,
-              "top": 31441092.8
+              "bottom": 31430906,
+              "top": 31440674
             },
             "mapping": {
               "xintercept": "xintercept",
