@@ -93,15 +93,16 @@ dashboardPage(
     waiter_show_on_load(
       tagList(
         #     tags$br(),
-            tags$strong(h1("Welcome to")),
+        tags$strong(h1("Welcome to")),
         #     tags$br(),
-            tags$strong(h1("ShinyButchR")),
+        tags$img(src="shinyButchR_logo.png",height="130px"),
+        #tags$strong(h1("ShinyButchR")),
         #     tags$br(),
-            tags$br(),
+        tags$br(),
         #     "Loading ...", 
         #     #tags$b("Demo"),
-            h2("Please wait ... loading ButchR and TensorFlow"),
-            tags$br(),
+        h2("Please wait ... loading ButchR and TensorFlow"),
+        tags$br(),
         html = spin_cube_grid(),
         tags$br(),
         tags$br()
