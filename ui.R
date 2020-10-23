@@ -139,8 +139,9 @@ dashboardPage(
             status = "warning",
             background = "black",
             #tags$hr(),
-            h4("Upload a matrix in a csv or RDS file 
-               Maximun file size = 30Mb (~ 600 x 5000 matrix)",
+            h4("Upload a matrix in a csv or RDS file",
+               align = "center"),
+            h4("Maximun file size = 30Mb (~ 600 x 5000 matrix)",
                align = "center"),
             # Input: Select a file ----
             fileInput("file1", "Choose a .csv or .RDS File",
