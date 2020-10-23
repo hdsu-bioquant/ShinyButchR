@@ -249,7 +249,7 @@ function(input, output, session) {
   })
   output$inputmatrix_printout <- renderTable({
     #print(annot_react()[1:5,])
-    inputMatrix_react()[1:5,1:5]
+    inputMatrix_react()[1:4,1:4]
     },
     spacing = "xs",
     rownames = TRUE
