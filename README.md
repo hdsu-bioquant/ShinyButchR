@@ -11,6 +11,9 @@
 diagnostic plots and visualizations that helps to find association of the NMF 
 signatures to known biological factors.
 
+## Citation 
+Andres Quintero, Daniel Hübschmann, Nils Kurzawa, Sebastian Steinhauser, Philipp Rentzsch, Stephen Krämer, Carolin Andresen, Jeongbin Park, Roland Eils, Matthias Schlesner, Carl Herrmann, [ShinyButchR: interactive NMF-based decomposition workflow of genome-scale datasets](https://doi.org/10.1093/biomethods/bpaa022), Biology Methods and Protocols, bpaa022.
+
 
 
 # How to use ShinyButchR 
