@@ -159,7 +159,9 @@ function(input, output, session) {
     if (ext %in% c("RDS", "rds", "Rds")) {
       mymat <- readRDS(my_path)
     } else if (ext %in% c("CSV", "csv", "Csv")) {
-      mymat <- as.matrix(read_csv(my_path))
+      #mymat <- as.matrix(read_csv(my_path))
+      mymat <- as.matrix(read.csv(my_path))
+      #print(mymat[1:5,1:5])
     } else {
       sendSweetAlert(
         session = session,
