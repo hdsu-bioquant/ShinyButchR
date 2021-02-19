@@ -55,7 +55,8 @@ function(input, output, session) {
     # When running on shinyapps.io, create a virtualenv
     reticulate::virtualenv_create(envname = "pytensor_env",
                                  python = "/usr/bin/python3")
-    reticulate::virtualenv_install("pytensor_env", packages = c("numpy"))
+    reticulate::virtualenv_remove(envname = "pytensor_env", packages = "pip")
+    reticulate::virtualenv_install("pytensor_env", packages = c("pip==19.0.3", "numpy"), ignore_installed = TRUE)
     reticulate::use_virtualenv("pytensor_env", required = T)
     library("tensorflow")
     #Collecting tensorflow-cpu==2.2.0
